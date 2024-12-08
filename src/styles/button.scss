@@ -1,0 +1,51 @@
+/* button */
+.btn {
+  position: relative;
+  @apply text-[0.889rem] text-white font-medium;
+  @apply px-1 py-1.5;
+  @apply border-[1px] border-solid rounded-[6px];
+
+  &.btn-normal {
+    @apply border-primary bg-primary;
+
+    &:not(.btn-disabled, .btn-readonly, .btn-loading) {
+      @apply hover:bg-primaryHover hover:border-primaryHover;
+      @apply active:bg-primaryActive active:border-primaryActive;
+    }
+
+    &.btn-disabled,
+    &.btn-loading {
+      @apply border-gray-300 bg-gray-300 text-gray-400;
+    }
+  }
+
+  &.btn-plain {
+  }
+
+  &.btn-outlined {
+  }
+
+  &.btn-disabled,
+  &.btn-readonly,
+  &.btn-loading {
+    cursor: auto;
+  }
+
+  &.btn-large {
+    @apply text-[1rem] px-[1.111rem] py-2;
+  }
+
+  &.btn-small {
+    @apply text-[0.667rem] px-[0.778rem];
+  }
+
+  .btn-spinner {
+    position: absolute;
+    top: calc(calc(100% - 20px) / 2);
+    left: calc(calc(100% - 20px) / 2);
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    @apply border-gray-400 border-2 border-b-gray-300 animate-spin;
+  }
+}
