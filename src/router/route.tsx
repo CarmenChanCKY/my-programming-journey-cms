@@ -27,6 +27,7 @@ const routePathBeforeLogin = routeBeforeLogin.map((obj: any) => {
 const routeAfterLogin = [
   {
     path: generateRoutePath("/post"),
+    name: "Post",
     lazy: async () => {
       const Post = (await import("../pages/Post/Post.tsx")).default;
       return {
@@ -34,10 +35,35 @@ const routeAfterLogin = [
       };
     },
   },
+  {
+    path: generateRoutePath("/categories"),
+    name: "Categories",
+    lazy: async () => {
+      const Categories = (await import("../pages/Categories/Categories.tsx"))
+        .default;
+      return {
+        element: <Categories />,
+      };
+    },
+  },
+  {
+    path: generateRoutePath("/tags"),
+    name: "Tags",
+    lazy: async () => {
+      const Tags = (await import("../pages/Tags/Tags.tsx")).default;
+      return {
+        element: <Tags />,
+      };
+    },
+  },
 ];
 
 const routePathAfterLogin = routeAfterLogin.map((obj: any) => {
   return obj.path;
+});
+
+const navBarContent = routeAfterLogin.map((obj: any) => {
+  return { path: obj.path, name: obj.name };
 });
 
 const router = createBrowserRouter([
@@ -53,4 +79,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-export { router, generateRoutePath, routePathBeforeLogin, routePathAfterLogin };
+export {
+  router,
+  generateRoutePath,
+  routePathBeforeLogin,
+  routePathAfterLogin,
+  navBarContent,
+};

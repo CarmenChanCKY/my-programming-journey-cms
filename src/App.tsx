@@ -44,18 +44,6 @@ function MainContent() {
           })}
         </div>
       ) : null}
-      {/* {toastList.map((toastData: ToastReducerType, index: number) => {
-        return (
-          <Toast
-            index={index}
-            key={`${toastData.id}_${index}` }
-            id={toastData.id}
-            text={toastData.text}
-            type={toastData.type}
-            duration={toastData.duration}
-          />
-        );
-      })} */}
     </main>
   );
 }

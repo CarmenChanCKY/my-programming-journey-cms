@@ -1,3 +1,4 @@
+import CustomDrawer from "@/components/ui/CustomDrawer";
 import {
   routePathAfterLogin,
   routePathBeforeLogin,
@@ -21,7 +22,7 @@ function Content() {
         if (isLogin) {
           // user has been login
           // redirect to the first path of routePathAfterLogin if the current path does not exist in routePathAfterLogin
-          if (!routePathBeforeLogin.includes(currentPath)) {
+          if (!routePathAfterLogin.includes(currentPath)) {
             navigate(routePathAfterLogin[0], { replace: true });
           } else {
             setAllowRoute(true);
@@ -38,7 +39,17 @@ function Content() {
       });
   }, [location.pathname]);
 
-  return <div>{allowRoute ? <Outlet /> : null}</div>;
+  return (
+    <div className={"min-h-full"}>
+      <div className={"min-h-full my-4 px-4 mx-auto max-w-[1000px]"}>
+        {/* drawer */}
+        <CustomDrawer currentPath={location.pathname}></CustomDrawer>
+
+        {/* page content */}
+        {allowRoute ? <Outlet /> : null}
+      </div>
+    </div>
+  );
 }
 
 export default Content;

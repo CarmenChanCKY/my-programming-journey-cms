@@ -1,9 +1,9 @@
 import { clsx } from "clsx";
 import { css } from "@emotion/css";
 import { hexToHsl, hslCSS } from "@/helper/color";
-import '@/styles/button.scss';
+import "@/styles/button.scss";
 
-interface ButtonType {
+interface CustomButtonType {
   text: string;
   type?: "button" | "submit" | "reset";
   className?: string;
@@ -15,7 +15,6 @@ interface ButtonType {
   small?: boolean;
   large?: boolean;
   disabled?: boolean;
-  readonly?: boolean;
   loading?: boolean;
   paddingTop?: number;
   paddingBottom?: number;
@@ -24,7 +23,7 @@ interface ButtonType {
   onClick?: (e: any) => void;
 }
 
-const setClass = (props: ButtonType) => {
+const setClass = (props: CustomButtonType) => {
   const classList: any = ["btn", props.className];
 
   if (props.outlined) {
@@ -47,22 +46,14 @@ const setClass = (props: ButtonType) => {
     classList.push("btn-large");
   }
 
-  if (props.disabled) {
+  if (props.disabled || props.loading) {
     classList.push("btn-disabled");
-  }
-
-  if (props.readonly) {
-    classList.push("btn-readonly");
-  }
-
-  if (props.loading) {
-    classList.push("btn-loading");
   }
 
   return classList;
 };
 
-const customBtnStyle = (props: ButtonType) => {
+const customBtnStyle = (props: CustomButtonType) => {
   const style: any = {};
   const hoverStyle: any = {};
   const activeStyle: any = {};
@@ -92,7 +83,7 @@ const customBtnStyle = (props: ButtonType) => {
     }
   }
 
-  if (!props.disabled && !props.readonly && !props.loading) {
+  if (!props.disabled && !props.loading) {
     // hover style
     if (Object.keys(hoverStyle).length > 0) {
       style["&:hover"] = hoverStyle;
@@ -123,16 +114,17 @@ const customBtnStyle = (props: ButtonType) => {
   return css(style);
 };
 
-const CustomButton = (props: ButtonType) => {
+const CustomButton = (props: CustomButtonType) => {
   return (
     <button
       type={props.type ?? "button"}
       className={clsx(setClass(props), customBtnStyle(props))}
       onClick={(e: any) => {
-        !props.disabled && !props.readonly && props.onClick
+        !props.loading && !props.disabled && props.onClick
           ? props.onClick!(e)
           : undefined;
       }}
+      disabled={props.loading || props.disabled}
     >
       <div className="btn-content" style={{ opacity: props.loading ? 0 : 1 }}>
         {props.text}

@@ -1,20 +1,18 @@
 /* button */
 .btn {
-  position: relative;
-  @apply text-[0.889rem] text-white font-medium;
+  @apply relative text-[0.889rem] text-white font-medium;
   @apply px-1 py-1.5;
   @apply border-[1px] border-solid rounded-[6px];
 
   &.btn-normal {
     @apply border-primary bg-primary;
 
-    &:not(.btn-disabled, .btn-readonly, .btn-loading) {
+    &:not(.btn-disabled) {
       @apply hover:bg-primaryHover hover:border-primaryHover;
       @apply active:bg-primaryActive active:border-primaryActive;
     }
 
-    &.btn-disabled,
-    &.btn-loading {
+    &.btn-disabled {
       @apply border-gray-300 bg-gray-300 text-gray-400;
     }
   }
@@ -25,11 +23,9 @@
   &.btn-outlined {
   }
 
-  &.btn-disabled,
-  &.btn-readonly,
-  &.btn-loading {
-    cursor: auto;
-  }
+  $normal-spinner-size: 20px;
+  $small-spinner-size: 10px;
+  $large-spinner-size: 30px;
 
   &.btn-large {
     @apply text-[1rem] px-[1.111rem] py-2;
@@ -40,12 +36,49 @@
   }
 
   .btn-spinner {
-    position: absolute;
-    top: calc(calc(100% - 20px) / 2);
-    left: calc(calc(100% - 20px) / 2);
-    height: 20px;
-    width: 20px;
+    top: calc(calc(100% - $normal-spinner-size) / 2);
+    left: calc(calc(100% - $normal-spinner-size) / 2);
+    height: $normal-spinner-size;
+    width: $normal-spinner-size;
     border-radius: 50%;
-    @apply border-gray-400 border-2 border-b-gray-300 animate-spin;
+    @apply absolute border-gray-400 border-2 border-b-gray-300 animate-spin;
   }
+}
+
+.icon-btn {
+  @apply relative p-1 border-[1px] border-solid rounded-[6px];
+
+  svg {
+    @apply text-white;
+  }
+
+  &.btn-normal {
+    @apply border-primary bg-primary;
+
+    &:not(.btn-disabled) {
+      @apply hover:bg-primaryHover hover:border-primaryHover;
+      @apply active:bg-primaryActive active:border-primaryActive;
+    }
+
+    &.btn-disabled {
+      @apply border-gray-300 bg-gray-300 text-gray-400;
+    }
+  }
+
+  &.btn-outlined {
+    @apply border-primary;
+
+    svg {
+      @apply text-primary;
+    }
+
+    &:not(.btn-disabled) {
+      @apply hover:bg-primaryHover hover:bg-opacity-10;
+      @apply active:bg-primaryHover active:bg-opacity-20;
+    }
+  }
+}
+
+.btn-disabled {
+  cursor: auto;
 }

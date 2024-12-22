@@ -2,6 +2,7 @@
 
 import plugin from "tailwindcss/plugin";
 import { hexToHsl, hslCSS } from "./src/helper/color";
+const flowbite = require("flowbite-react/tailwind");
 
 const generateColors = () => {
   const defaultColor = {
@@ -109,6 +110,7 @@ export default {
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./node_modules/flowbite/**/*.js",
+    flowbite.content(),
   ],
   theme: {
     screens: {
@@ -129,5 +131,6 @@ export default {
       });
     }),
     require("flowbite/plugin"),
+    flowbite.plugin(),
   ],
 };

@@ -158,4 +158,34 @@
       }
     }
   }
+
+  .drawer-item {
+    @apply hover:bg-transparent !important;
+    @apply justify-start !important;
+
+    & > span {
+      @apply uppercase relative max-w-fit;
+      &::after {
+        content: "";
+        transition: 0.3s;
+        @apply w-0 inline-block absolute h-[15px] left-0 bottom-0 rounded-[5px];
+      }
+
+      &:hover::after {
+        width: 100%;
+        @apply w-full bg-primary-200 bg-opacity-40;
+      }
+    }
+
+    &.drawer-item-active {
+      @apply bg-transparent !important;
+
+      & > span {
+        &::after {
+          content: "";
+          @apply w-full bg-primary-200 bg-opacity-40;
+        }
+      }
+    }
+  }
 }

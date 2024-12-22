@@ -6,7 +6,7 @@ import GridRow from "@/components/ui/grid_system/GridRow";
 import GridColumn from "@/components/ui/grid_system/GridColumn";
 import Card from "@/components/ui/card/Card";
 import InputField from "@/components/ui/form/InputField";
-import CustomButton from "@/components/ui/CustomButton";
+import CustomButton from "@/components/ui/button/CustomButton";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "@/context/GlobalContext";
 import { log } from "@/helper/common";
@@ -61,7 +61,7 @@ const Login = () => {
   const onSubmit: SubmitHandler<LoginFormInterface> = async (
     data: LoginFormInterface
   ) => {
-    let test = "";
+    /* let test = "";
 
     const count = Math.floor(Math.random() * 5) + 1;
 
@@ -74,23 +74,23 @@ const Login = () => {
       actionType: "insert",
       text: test,
       type: "success",
-    });
-    // log("--- Login Data ---");
-    // log(data);
-    // if (!showLoading) {
-    //   setLoading(true);
-    //   try {
-    //     const result = await cmsSignIn(data.email, data.password);
-    //     log("--- Sign In Result ---");
-    //     log(result);
-    //     setLoading(false);
-    //     navigate(generateRoutePath("/post"), { replace: true });
-    //   } catch (error: any) {
-    //     log("--- Sign In Error ---");
-    //     log(error);
-    //     setLoading(false);
-    //   }
-    // }
+    }); */
+    log("--- Login Data ---");
+    log(data);
+    if (!showLoading) {
+      setLoading(true);
+      try {
+        const result = await cmsSignIn(data.email, data.password);
+        log("--- Sign In Result ---");
+        log(result);
+        setLoading(false);
+        navigate(generateRoutePath("/post"), { replace: true });
+      } catch (error: any) {
+        log("--- Sign In Error ---");
+        log(error);
+        setLoading(false);
+      }
+    }
   };
 
   /* for password suffix icon */
