@@ -44,10 +44,9 @@ const eyeSlash: JSX.Element = (
   </svg>
 );
 // TODO: can use flowbite for tooltip / snackbar / table ...etc
-const Login = () => {
+function Login() {
   const navigate = useNavigate();
-  const { showLoading, setLoading, toastDispatch } =
-    useContext(GlobalContext);
+  const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
   const [showPW, setShowPW] = useState(false);
 
   const form = useForm<LoginFormInterface>({
@@ -155,6 +154,6 @@ const Login = () => {
       </div>
     </FormProvider>
   );
-};
+}
 
 export default Login;

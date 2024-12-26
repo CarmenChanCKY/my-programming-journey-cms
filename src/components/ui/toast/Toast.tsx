@@ -17,7 +17,7 @@ const alertCSS = (type: "success" | "error" | "info") => {
   return cssArr;
 };
 
-const Toast = (props: ToastType & { index: number }) => {
+function Toast(props: ToastType & { index: number }) {
   const toastRef = useRef<HTMLDivElement | null>(null);
   const { toastDispatch } = useContext(GlobalContext);
 
@@ -62,6 +62,6 @@ const Toast = (props: ToastType & { index: number }) => {
       <div>{props.text}</div>
     </div>
   );
-};
+}
 
 export default Toast;

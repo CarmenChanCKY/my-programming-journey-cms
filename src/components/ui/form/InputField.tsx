@@ -71,7 +71,7 @@ const formatInput = (e: any, props: InputFieldType) => {
   return true;
 };
 
-const InputField = (props: InputFieldType) => {
+function InputField(props: InputFieldType) {
   const { register, formState, getFieldState } = useFormContext();
   const { invalid, error } = getFieldState(props.name, formState);
 
@@ -145,6 +145,6 @@ const InputField = (props: InputFieldType) => {
       {invalid ? <div className="error-msg">{error?.message}</div> : null}
     </>
   );
-};
+}
 
 export default InputField;

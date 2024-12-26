@@ -86,7 +86,7 @@ const customBtnStyle = (props: IconButtonType) => {
   return css(style);
 };
 
-const IconButton = (props: IconButtonType) => {
+function IconButton(props: IconButtonType) {
   return (
     <button
       type={props.type ?? "button"}
@@ -102,6 +102,6 @@ const IconButton = (props: IconButtonType) => {
       {props.loading ? <div className="btn-spinner"></div> : null}
     </button>
   );
-};
+}
 
 export default IconButton;

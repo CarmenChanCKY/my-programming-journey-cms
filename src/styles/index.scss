@@ -159,9 +159,16 @@
     }
   }
 
+  /* drawer */
   .drawer-item {
     @apply hover:bg-transparent !important;
     @apply justify-start !important;
+
+    &:hover {
+      & > span::after {
+        @apply w-full bg-primary-200 bg-opacity-40;
+      }
+    }
 
     & > span {
       @apply uppercase relative max-w-fit;
@@ -169,11 +176,6 @@
         content: "";
         transition: 0.3s;
         @apply w-0 inline-block absolute h-[15px] left-0 bottom-0 rounded-[5px];
-      }
-
-      &:hover::after {
-        width: 100%;
-        @apply w-full bg-primary-200 bg-opacity-40;
       }
     }
 

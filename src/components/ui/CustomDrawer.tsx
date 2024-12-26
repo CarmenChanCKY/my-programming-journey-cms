@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { CustomFlowbiteTheme, Drawer, Sidebar } from "flowbite-react";
+import { Drawer, Sidebar } from "flowbite-react";
 import IconButton from "@/components/ui/button/IconButton";
 import { navBarContent } from "@/router/route";
 import { Link } from "react-router-dom";
 import { clsx } from "clsx";
-
-// TODO: https://flowbite-react.com/docs/components/drawer
 
 function CustomDrawer({ currentPath }: { currentPath: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false);

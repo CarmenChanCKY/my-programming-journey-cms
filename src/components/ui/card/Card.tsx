@@ -62,12 +62,12 @@ const setInlineStyle = (props: CardType) => {
   return inlineStyle;
 };
 
-const Card = (props: CardType) => {
+function Card(props: CardType) {
   return (
     <div className={clsx(setClass(props))} style={setInlineStyle(props)}>
       {props.children}
     </div>
   );
-};
+}
 
 export default Card;

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { clsx } from "clsx";
-import '@/styles/grid-system.scss';
+import "@/styles/grid-system.scss";
 
 type GridColumnSize = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -44,10 +44,11 @@ const addGridColumnClass = (props: GridColumnProps) => {
 
   return classList;
 };
-const GridColumn = (props: GridColumnProps) => {
+
+function GridColumn(props: GridColumnProps) {
   return (
     <div className={clsx(addGridColumnClass(props))}>{props.children}</div>
   );
-};
+}
 
 export default GridColumn;
