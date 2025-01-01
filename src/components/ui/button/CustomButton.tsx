@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { clsx } from "clsx";
 import { css } from "@emotion/css";
-import { hexToHsl, hslCSS } from "@/helper/color";
+import { genBgHoverActiveColor } from "@/helper/color";
 import "@/styles/button.scss";
 
 interface CustomButtonType {
@@ -24,7 +25,11 @@ interface CustomButtonType {
 }
 
 const setClass = (props: CustomButtonType) => {
-  const classList: any = ["btn", props.className];
+  const classList: Array<string> = ["btn"];
+
+  if (props.className !== undefined) {
+    classList.push(props.className);
+  }
 
   if (props.outlined) {
     classList.push("btn-outlined");
@@ -60,22 +65,10 @@ const customBtnStyle = (props: CustomButtonType) => {
 
   if (!props.disabled) {
     if (props.bgColor) {
-      const hslColor = hexToHsl(props.bgColor);
-      style.backgroundColor = hslCSS(hslColor.h, hslColor.s, hslColor.l);
-      hoverStyle.backgroundColor = hslCSS(
-        hslColor.h,
-        hslColor.s,
-        hslColor.l,
-        true
-      );
-
-      activeStyle.backgroundColor = hslCSS(
-        hslColor.h,
-        hslColor.s,
-        hslColor.l,
-        false,
-        true
-      );
+      const genColor = genBgHoverActiveColor(props.bgColor);
+      style.backgroundColor = genColor.bgColor;
+      hoverStyle.backgroundColor = genColor.hoverColor;
+      activeStyle.backgroundColor = genColor.activeColor;
     }
 
     if (props.textColor) {

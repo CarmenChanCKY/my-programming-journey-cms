@@ -53,11 +53,13 @@
   }
 
   &.btn-normal {
-    @apply border-primary bg-primary;
+    &.default-color {
+      @apply border-primary bg-primary;
 
-    &:not(.btn-disabled) {
-      @apply hover:bg-primaryHover hover:border-primaryHover;
-      @apply active:bg-primaryActive active:border-primaryActive;
+      &:not(.btn-disabled) {
+        @apply hover:bg-primaryHover hover:border-primaryHover;
+        @apply active:bg-primaryActive active:border-primaryActive;
+      }
     }
 
     &.btn-disabled {
@@ -66,16 +68,47 @@
   }
 
   &.btn-outlined {
-    @apply border-primary;
+    &.default-color {
+      @apply border-primary;
 
+      svg {
+        @apply text-primary;
+      }
+
+      &:not(.btn-disabled) {
+        @apply hover:bg-primaryHover hover:bg-opacity-10;
+        @apply active:bg-primaryActive active:bg-opacity-20;
+      }
+    }
+  }
+
+  &.btn-plain {
+    @apply bg-transparent border-none;
+
+    &.default-color {
+      svg {
+        @apply text-primary;
+      }
+
+      &:not(.btn-disabled) {
+        @apply hover:bg-primaryHover hover:bg-opacity-10;
+        @apply active:bg-primaryActive active:bg-opacity-20;
+      }
+    }
+  }
+
+  &.btn-disabled {
     svg {
-      @apply text-primary;
+      @apply text-gray-200;
     }
+  }
 
-    &:not(.btn-disabled) {
-      @apply hover:bg-primaryHover hover:bg-opacity-10;
-      @apply active:bg-primaryHover active:bg-opacity-20;
-    }
+  &.btn-large {
+    @apply scale-[1.2];
+  }
+
+  &.btn-small {
+    @apply scale-[0.8];
   }
 }
 

@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 import plugin from "tailwindcss/plugin";
-import { hexToHsl, hslCSS } from "./src/helper/color";
+import { genBgHoverActiveColor } from "./src/helper/color";
 const flowbite = require("flowbite-react/tailwind");
 
 const generateColors = () => {
@@ -87,18 +87,13 @@ const generateColors = () => {
 
   for (let key in defaultColor) {
     if (typeof defaultColor[key] === "object") {
-      const hslValue = hexToHsl(defaultColor[key]["DEFAULT"]);
-      color[`${key}Hover`] = hslCSS(hslValue.h, hslValue.s, hslValue.l, true);
-      color[`${key}Active`] = hslCSS(
-        hslValue.h,
-        hslValue.s,
-        hslValue.l,
-        false,
-        true
+      const getHoverActiveColor = genBgHoverActiveColor(
+        defaultColor[key]["DEFAULT"]
       );
+      color[`${key}Hover`] = getHoverActiveColor.hoverColor;
+      color[`${key}Active`] = getHoverActiveColor.activeColor;
     }
   }
-
 
   return color;
 };

@@ -190,4 +190,23 @@
       }
     }
   }
+
+  /* progress bar */
+  .progress-bar {
+    @apply absolute left-0;
+    width: 15% !important;
+    animation: progress-linear 1.5s infinite;
+  }
+
+  @keyframes progress-linear {
+    0% {
+      left: -15%;
+      animation-timing-function: ease-in-out;
+    }
+
+    100% {
+      left: 115%;
+      animation-timing-function: ease-in-out;
+    }
+  }
 }

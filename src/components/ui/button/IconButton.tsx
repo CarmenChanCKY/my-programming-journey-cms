@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { clsx } from "clsx";
 import { css } from "@emotion/css";
-import { hexToHsl, hslCSS } from "@/helper/color";
+import { genBgHoverActiveColor } from "@/helper/color";
 import "@/styles/button.scss";
 
 interface IconButtonType {
   icon: JSX.Element;
   type?: "button" | "submit" | "reset";
   className?: string;
-  outlined?: boolean; //
+  outlined?: boolean;
   plain?: boolean; //
   bgColor?: string;
   iconColor?: string;
@@ -20,7 +21,11 @@ interface IconButtonType {
 }
 
 const setClass = (props: IconButtonType) => {
-  const classList: any = ["icon-btn", props.className];
+  const classList: Array<string> = ["icon-btn"];
+
+  if (props.className !== undefined) {
+    classList.push(props.className);
+  }
 
   if (props.outlined) {
     classList.push("btn-outlined");
@@ -40,6 +45,10 @@ const setClass = (props: IconButtonType) => {
 
   if (props.disabled || props.loading) {
     classList.push("btn-disabled");
+  } else {
+    if (!props.bgColor && !props.iconColor) {
+      classList.push("default-color");
+    }
   }
 
   return classList;
@@ -52,22 +61,19 @@ const customBtnStyle = (props: IconButtonType) => {
 
   if (!props.disabled) {
     if (props.bgColor) {
-      const hslColor = hexToHsl(props.bgColor);
-      style.backgroundColor = hslCSS(hslColor.h, hslColor.s, hslColor.l);
-      hoverStyle.backgroundColor = hslCSS(
-        hslColor.h,
-        hslColor.s,
-        hslColor.l,
-        true
-      );
+      const genColor = genBgHoverActiveColor(props.bgColor);
 
-      activeStyle.backgroundColor = hslCSS(
-        hslColor.h,
-        hslColor.s,
-        hslColor.l,
-        false,
-        true
-      );
+      if (!props.plain) {
+        style.backgroundColor = genColor.bgColor;
+      }
+
+      hoverStyle.backgroundColor = genColor.hoverColor;
+      activeStyle.backgroundColor = genColor.activeColor;
+    }
+
+    if (props.iconColor) {
+      const genColor = genBgHoverActiveColor(props.iconColor);
+      style["& svg"] = { color: genColor.bgColor };
     }
   }
 
@@ -93,7 +99,9 @@ function IconButton(props: IconButtonType) {
       className={clsx(setClass(props), customBtnStyle(props))}
       {...props.customAttribute}
       onClick={(e: any) => {
-        !props.disabled && props.onClick ? props.onClick!(e) : undefined;
+        !props.disabled && !props.loading && props.onClick
+          ? props.onClick!(e)
+          : undefined;
       }}
     >
       <div className="btn-content" style={{ opacity: props.loading ? 0 : 1 }}>

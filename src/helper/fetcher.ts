@@ -5,7 +5,7 @@ const baseURL = "http://localhost:3100";
 
 async function cmsSignIn(email: string, password: string) {
   try {
-    let loginResult = await signIn({
+    const loginResult = await signIn({
       formFields: [
         {
           id: "email",

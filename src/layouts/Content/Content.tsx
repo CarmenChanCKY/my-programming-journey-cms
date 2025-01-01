@@ -1,9 +1,5 @@
 import CustomDrawer from "@/components/ui/CustomDrawer";
-import {
-  routePathAfterLogin,
-  routePathBeforeLogin,
-  generateRoutePath,
-} from "@/router/route";
+import { routePathAfterLogin, generateRoutePath } from "@/router/route";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import SessionWebJs from "supertokens-web-js/recipe/session";
@@ -42,8 +38,14 @@ function Content() {
   return (
     <div className={"min-h-full"}>
       <div className={"min-h-full my-4 px-4 mx-auto max-w-[1000px]"}>
-        {/* drawer */}
-        <CustomDrawer currentPath={location.pathname}></CustomDrawer>
+        {/* drawer and cms name */}
+
+        <div className="flex items-center justify-start mb-10">
+          <CustomDrawer currentPath={location.pathname}></CustomDrawer>
+          <span className="ml-6 uppercase text-lg font-bold select-none">
+            My Programming Journey
+          </span>
+        </div>
 
         {/* page content */}
         {allowRoute ? <Outlet /> : null}

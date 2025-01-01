@@ -80,6 +80,7 @@ const hslCSS = (
   h: number,
   s: number,
   l: number,
+  a: number = 1,
   isHover: boolean = false,
   isActive: boolean = false
 ): string => {
@@ -90,7 +91,46 @@ const hslCSS = (
     updateLValue -= 8;
   }
 
-  return `hsl(${h}deg ${s}% ${updateLValue}%)`;
+  let opacity = a;
+  if (opacity > 1) {
+    opacity = opacity / 100;
+  }
+
+  return `hsl(${h}deg ${s}% ${updateLValue}% / ${opacity})`;
 };
 
-export { hexToHsl, hslCSS };
+const genBgHoverActiveColor = (
+  hexString: string,
+  hoverOpacity: number = 0.1,
+  activeOpacity: number = 0.2
+) => {
+  const returnProps = {
+    bgColor: "",
+    hoverColor: "",
+    activeColor: "",
+  };
+
+  const hslColor = hexToHsl(hexString);
+  returnProps.bgColor = hslCSS(hslColor.h, hslColor.s, hslColor.l);
+
+  returnProps.hoverColor = hslCSS(
+    hslColor.h,
+    hslColor.s,
+    hslColor.l,
+    hoverOpacity,
+    true
+  );
+
+  returnProps.activeColor = hslCSS(
+    hslColor.h,
+    hslColor.s,
+    hslColor.l,
+    activeOpacity,
+    false,
+    true
+  );
+
+  return returnProps;
+};
+
+export { genBgHoverActiveColor };

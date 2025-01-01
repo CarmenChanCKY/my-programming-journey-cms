@@ -46,7 +46,7 @@ const eyeSlash: JSX.Element = (
 // TODO: can use flowbite for tooltip / snackbar / table ...etc
 function Login() {
   const navigate = useNavigate();
-  const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
+  const { showLoading, setLoading } = useContext(GlobalContext);
   const [showPW, setShowPW] = useState(false);
 
   const form = useForm<LoginFormInterface>({

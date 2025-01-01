@@ -18,7 +18,7 @@ function ToastReducer(
       toastData.id = `toast-${generateRandomString(8)}-${new Date().getTime()}`;
       return [...toastList, toastData];
     case "remove":
-      let newList: Array<ToastReducerType> = [...toastList];
+      { const newList: Array<ToastReducerType> = [...toastList];
 
       if (
         toastData.id !== undefined &&
@@ -34,7 +34,7 @@ function ToastReducer(
         }
       }
 
-      return newList;
+      return newList; }
     default:
       return toastList;
   }

@@ -29,7 +29,6 @@ function CustomDrawer({ currentPath }: { currentPath: string }) {
     <>
       {/* button to open navigation drawer */}
       <IconButton
-        className="mb-7"
         icon={hamburgerIcon}
         outlined={true}
         customAttribute={{
