@@ -1,4 +1,4 @@
-import { signIn } from "supertokens-web-js/recipe/emailpassword";
+import { signIn, signOut } from "supertokens-web-js/recipe/emailpassword";
 import { log } from "./common";
 
 const baseURL = "http://localhost:3100";
@@ -39,4 +39,8 @@ async function cmsSignIn(email: string, password: string) {
   }
 }
 
-export { cmsSignIn };
+async function cmsSignout() {
+  await signOut();
+}
+
+export { cmsSignIn, cmsSignout };

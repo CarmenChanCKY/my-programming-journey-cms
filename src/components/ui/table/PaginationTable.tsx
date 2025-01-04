@@ -3,7 +3,7 @@ import Card from "@/components/ui/card/Card";
 import IconButton from "@/components/ui/button/IconButton";
 import { useState, useEffect } from "react";
 
-interface TableHeaderType {
+export interface TableHeaderType {
   key: string;
   child: string | JSX.Element;
 }

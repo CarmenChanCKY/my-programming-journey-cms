@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Drawer, Sidebar } from "flowbite-react";
 import IconButton from "@/components/ui/button/IconButton";
-import { navBarContent } from "@/router/route";
-import { Link } from "react-router-dom";
+import { generateRoutePath, navBarContent } from "@/router/route";
+import { Link, useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
+import { cmsSignout } from "@/helper/fetcher";
 
 function CustomDrawer({ currentPath }: { currentPath: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = useNavigate();
 
   const hamburgerIcon: JSX.Element = (
     <svg
@@ -70,6 +72,21 @@ function CustomDrawer({ currentPath }: { currentPath: string }) {
                     </Sidebar.Item>
                   );
                 })}
+              </Sidebar.ItemGroup>
+
+              <Sidebar.ItemGroup>
+                <Sidebar.Item
+                  className="cursor-pointer"
+                  onClick={async (e: any) => {
+                    e.stopPropagation();
+                    await cmsSignout();
+                    navigate(generateRoutePath("/login", false), {
+                      replace: true,
+                    });
+                  }}
+                >
+                  Logout
+                </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </Sidebar>
