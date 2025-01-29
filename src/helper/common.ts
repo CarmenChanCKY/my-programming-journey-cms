@@ -7,6 +7,15 @@ const log = (msg: any) => {
   }
 };
 
+const errorLog = (msg: any) => {
+  if (
+    window.location.href.includes("localhost") ||
+    window.location.href.includes("127.0.0.1")
+  ) {
+    console.error(msg);
+  }
+};
+
 const rounding = (num: number, decimal: number = 0): number => {
   decimal = 10 ** decimal;
   return Math.round(num * decimal) / decimal;
@@ -25,4 +34,4 @@ const generateRandomString = (len: number): string => {
   return result;
 };
 
-export { log, rounding, generateRandomString };
+export { log, errorLog, rounding, generateRandomString };

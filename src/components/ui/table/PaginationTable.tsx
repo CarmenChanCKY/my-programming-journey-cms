@@ -1,7 +1,7 @@
 import { CustomFlowbiteTheme, Table, Progress } from "flowbite-react";
 import Card from "@/components/ui/card/Card";
-import IconButton from "@/components/ui/button/IconButton";
 import { useState, useEffect } from "react";
+import IconButton from "../button/IconButton";
 
 export interface TableHeaderType {
   key: string;
@@ -102,7 +102,7 @@ const customTableTheme: CustomFlowbiteTheme["table"] = {
   body: {
     base: "group/body bg-white divide-y",
     cell: {
-      base: "px-6 py-4 text-sm group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg",
+      base: "px-6 py-2 text-sm group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg",
     },
   },
   row: {
@@ -129,6 +129,13 @@ function PaginationTable(props: TableType) {
 
   // format table data
   const getTableData = (): Array<Array<JSX.Element>> => {
+    const header = props.header;
+    const data = props.data;
+
+    if (header.length <= 0 || data.length <= 0) {
+      return [];
+    }
+
     const tableData: Array<Array<JSX.Element>> = [];
     let startRowIndex = 0;
     let endRowIndex = 0;
@@ -142,9 +149,6 @@ function PaginationTable(props: TableType) {
         endRowIndex = props.totalItems;
       }
     }
-
-    const header = props.header;
-    const data = props.data;
 
     for (let i = startRowIndex; i < endRowIndex; i++) {
       const dataKey = Object.keys(data[i]);
@@ -164,7 +168,7 @@ function PaginationTable(props: TableType) {
 
         tempElement.push(
           <Table.Cell
-            className="whitespace-nowrap font-medium text-gray-900"
+            className="whitespace-nowrap font-medium text-gray-500"
             key={`data_cell_${i}_${k}`}
           >
             {element}
@@ -188,6 +192,11 @@ function PaginationTable(props: TableType) {
     // format data when props.data / current page / total items updated
     setFormatData(getTableData());
   }, [props.header, props.data, props.serverPagination, totalPages, page]);
+
+  useEffect(() => {
+    // notify the page changed
+    props.onPageChange(page);
+  }, [page]);
 
   return (
     <div className="overflow-x-auto">
@@ -225,9 +234,7 @@ function PaginationTable(props: TableType) {
                 <p className="text-center mt-3">Loading...</p>
               </Table.Cell>
             </Table.Row>
-          ) : null}
-
-          {props.data.length > 0 ? (
+          ) : props.data.length > 0 ? (
             /* formatted data row */
             formatData.map((row: Array<JSX.Element>, index: number) => {
               return <Table.Row key={`data_${index}`}>{row}</Table.Row>;

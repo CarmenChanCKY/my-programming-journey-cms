@@ -43,10 +43,10 @@ const eyeSlash: JSX.Element = (
     <path d="M6.75 12c0-.619.107-1.213.304-1.764l-3.1-3.1a11.25 11.25 0 0 0-2.63 4.31c-.12.362-.12.752 0 1.114 1.489 4.467 5.704 7.69 10.675 7.69 1.5 0 2.933-.294 4.242-.827l-2.477-2.477A5.25 5.25 0 0 1 6.75 12Z" />
   </svg>
 );
-// TODO: can use flowbite for tooltip / snackbar / table ...etc
+
 function Login() {
   const navigate = useNavigate();
-  const { showLoading, setLoading } = useContext(GlobalContext);
+  const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
   const [showPW, setShowPW] = useState(false);
 
   const form = useForm<LoginFormInterface>({
@@ -60,20 +60,6 @@ function Login() {
   const onSubmit: SubmitHandler<LoginFormInterface> = async (
     data: LoginFormInterface
   ) => {
-    /* let test = "";
-
-    const count = Math.floor(Math.random() * 5) + 1;
-
-    for (let i = 0; i < count; i++) {
-      test +=
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ";
-    }
-
-    toastDispatch({
-      actionType: "insert",
-      text: test,
-      type: "success",
-    }); */
     log("--- Login Data ---");
     log(data);
     if (!showLoading) {
@@ -87,6 +73,11 @@ function Login() {
       } catch (error: any) {
         log("--- Sign In Error ---");
         log(error);
+        toastDispatch({
+          actionType: "insert",
+          text: "Incorrect Email or Password",
+          type: "error",
+        });
         setLoading(false);
       }
     }

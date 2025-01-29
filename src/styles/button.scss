@@ -76,8 +76,8 @@
       }
 
       &:not(.btn-disabled) {
-        @apply hover:bg-primaryHover hover:bg-opacity-10;
-        @apply active:bg-primaryActive active:bg-opacity-20;
+        @apply hover:bg-primaryOpacityHover;
+        @apply active:bg-primaryOpacityActive;
       }
     }
   }
@@ -91,8 +91,8 @@
       }
 
       &:not(.btn-disabled) {
-        @apply hover:bg-primaryHover hover:bg-opacity-10;
-        @apply active:bg-primaryActive active:bg-opacity-20;
+        @apply hover:bg-primaryOpacityHover;
+        @apply active:bg-primaryOpacityActive;
       }
     }
   }
