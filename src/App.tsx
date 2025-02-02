@@ -31,16 +31,7 @@ function MainContent() {
       {toastList.length > 0 ? (
         <div className="fixed top-5 right-5">
           {toastList.map((toastData: ToastReducerType, index: number) => {
-            return (
-              <Toast
-                index={index}
-                key={toastData.id}
-                id={toastData.id}
-                text={toastData.text}
-                type={toastData.type}
-                duration={toastData.duration}
-              />
-            );
+            return <Toast {...toastData} index={index} key={toastData.id} />;
           })}
         </div>
       ) : null}

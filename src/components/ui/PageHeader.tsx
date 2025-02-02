@@ -25,8 +25,8 @@ function PageHeader(props: PageHeaderType) {
   }, [location.pathname]);
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="text-xl font-semibold text-gray-600 mb-6">
+    <div className="flex items-center justify-between mb-6">
+      <div className="text-xl font-semibold text-gray-600">
         {currentPathName}
       </div>
       <div>{props.rightComponent}</div>

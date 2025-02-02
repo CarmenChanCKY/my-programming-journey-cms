@@ -1,7 +1,7 @@
-import ToastType from "@/components/ui/toast/ToastType";
 import { clsx } from "clsx";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "@/context/GlobalContext";
+import { ToastReducerType } from "@/components/ui/toast/ToastReducer";
 
 const alertCSS = (type: "success" | "error" | "info") => {
   const cssArr = ["toast"];
@@ -17,7 +17,7 @@ const alertCSS = (type: "success" | "error" | "info") => {
   return cssArr;
 };
 
-function Toast(props: ToastType & { index: number }) {
+function Toast(props: ToastReducerType & { index: number }) {
   const toastRef = useRef<HTMLDivElement | null>(null);
   const { toastDispatch } = useContext(GlobalContext);
 
@@ -37,6 +37,16 @@ function Toast(props: ToastType & { index: number }) {
           actionType: "remove",
         });
       }, 350);
+
+      // refresh the page
+      if (props.refresh) {
+        window.location.reload();
+      }
+
+      // notify the toast dismiss
+      if (props.onToastDismiss != undefined && props.onToastDismiss != null) {
+        props.onToastDismiss();
+      }
     }, hideDuration);
 
     return () => {

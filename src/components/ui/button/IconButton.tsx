@@ -9,7 +9,7 @@ interface IconButtonType {
   type?: "button" | "submit" | "reset";
   className?: string;
   outlined?: boolean;
-  plain?: boolean; //
+  plain?: boolean;
   bgColor?: string;
   iconColor?: string;
   small?: boolean;

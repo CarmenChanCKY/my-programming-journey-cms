@@ -3,8 +3,8 @@ import { generateRandomString } from "@/helper/common";
 
 type ToastReducerType = {
   actionType: "insert" | "remove";
-  /** redirect when timeout */
-  redirectLocation?: string;
+  /** notify when toast dismiss */
+  onToastDismiss?: () => void;
   /** refresh when timeout */
   refresh?: boolean;
 } & ToastType;
@@ -17,8 +17,8 @@ function ToastReducer(
     case "insert":
       toastData.id = `toast-${generateRandomString(8)}-${new Date().getTime()}`;
       return [...toastList, toastData];
-    case "remove":
-      { const newList: Array<ToastReducerType> = [...toastList];
+    case "remove": {
+      const newList: Array<ToastReducerType> = [...toastList];
 
       if (
         toastData.id !== undefined &&
@@ -34,7 +34,8 @@ function ToastReducer(
         }
       }
 
-      return newList; }
+      return newList;
+    }
     default:
       return toastList;
   }

@@ -44,24 +44,31 @@ async function cmsSignout() {
   await signOut();
 }
 
-async function getAPI(
+// fetch server data with specific method
+async function serverApi(
   path: string,
-  params: any = {},
+  method: string = "get",
+  params?: { [key: string]: any },
+  formData?: { [key: string]: any },
   cancelSignal?: GenericAbortSignal
 ) {
   return new Promise((resolve, reject) => {
-    const config: AxiosRequestConfig = {};
+    const config: AxiosRequestConfig = {
+      method: method,
+      url: `${baseURL}${path}`,
+    };
 
-    if (Object.keys(params).length > 0) {
+    if (Object.keys(params ?? {}).length > 0) {
       config.params = params;
+    } else if (Object.keys(formData ?? {}).length > 0) {
+      config.data = formData;
     }
 
     if (cancelSignal != null) {
       config.signal = cancelSignal;
     }
 
-    axios
-      .get(`${baseURL}${path}`, config)
+    axios(config)
       .then(function (response) {
         log(response);
         if (response.status === 200 && response.statusText === "OK") {
@@ -84,6 +91,4 @@ async function getAPI(
   });
 }
 
-async function postAPI(path: string, formData: never) {}
-
-export { cmsSignIn, cmsSignout, getAPI, postAPI };
+export { cmsSignIn, cmsSignout, serverApi };

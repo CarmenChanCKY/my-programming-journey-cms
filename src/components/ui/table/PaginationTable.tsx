@@ -1,7 +1,8 @@
 import { CustomFlowbiteTheme, Table, Progress } from "flowbite-react";
 import Card from "@/components/ui/card/Card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import IconButton from "../button/IconButton";
+import { GlobalContext } from "@/context/GlobalContext";
 
 export interface TableHeaderType {
   key: string;
@@ -16,7 +17,7 @@ interface TableType {
   header: Array<TableHeaderType>;
   data: Array<TableDataType>;
   loading: boolean;
-  initialPage: number;
+  page: number;
   totalItems: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
@@ -123,9 +124,9 @@ const customProgressTheme: CustomFlowbiteTheme["progress"] = {
 };
 
 function PaginationTable(props: TableType) {
-  const [page, setPage] = useState(props.initialPage);
   const [totalPages, setTotalPages] = useState(1);
   const [formatData, setFormatData] = useState([] as Array<Array<JSX.Element>>);
+  const { showLoading } = useContext(GlobalContext);
 
   // format table data
   const getTableData = (): Array<Array<JSX.Element>> => {
@@ -142,8 +143,8 @@ function PaginationTable(props: TableType) {
     if (props.serverPagination) {
       endRowIndex = props.data.length;
     } else {
-      startRowIndex = (page - 1) * props.itemsPerPage;
-      endRowIndex = page * props.itemsPerPage;
+      startRowIndex = (props.page - 1) * props.itemsPerPage;
+      endRowIndex = props.page * props.itemsPerPage;
 
       if (endRowIndex > props.totalItems) {
         endRowIndex = props.totalItems;
@@ -191,12 +192,13 @@ function PaginationTable(props: TableType) {
   useEffect(() => {
     // format data when props.data / current page / total items updated
     setFormatData(getTableData());
-  }, [props.header, props.data, props.serverPagination, totalPages, page]);
-
-  useEffect(() => {
-    // notify the page changed
-    props.onPageChange(page);
-  }, [page]);
+  }, [
+    props.header,
+    props.data,
+    props.serverPagination,
+    totalPages,
+    props.page,
+  ]);
 
   return (
     <div className="overflow-x-auto">
@@ -257,16 +259,17 @@ function PaginationTable(props: TableType) {
       >
         <div className="flex items-center justify-between text-wrap">
           <div className="text-xs text-gray-400">
-            {page} - {totalPages} of {props.totalItems}
+            {props.page} - {totalPages} of {props.totalItems}
           </div>
           <div>
             {/* go to first page */}
             <IconButton
               disabled={
                 props.loading ||
-                page === 1 ||
+                props.page === 1 ||
                 props.data.length === 0 ||
-                props.totalItems === 0
+                props.totalItems === 0 ||
+                showLoading
               }
               icon={firstPageIcon}
               plain={true}
@@ -274,7 +277,8 @@ function PaginationTable(props: TableType) {
               bgColor="#5b6c7c"
               iconColor="#9aaebb"
               onClick={() => {
-                setPage(1);
+                // notify the page changed
+                props.onPageChange(1);
               }}
             ></IconButton>
 
@@ -282,9 +286,10 @@ function PaginationTable(props: TableType) {
             <IconButton
               disabled={
                 props.loading ||
-                page === 1 ||
+                props.page === 1 ||
                 props.data.length === 0 ||
-                props.totalItems === 0
+                props.totalItems === 0 ||
+                showLoading
               }
               icon={previousPageIcon}
               plain={true}
@@ -292,9 +297,8 @@ function PaginationTable(props: TableType) {
               bgColor="#5b6c7c"
               iconColor="#6d8294"
               onClick={() => {
-                setPage((prev: number) => {
-                  return prev - 1;
-                });
+                // notify the page changed
+                props.onPageChange(props.page - 1);
               }}
             ></IconButton>
 
@@ -302,9 +306,10 @@ function PaginationTable(props: TableType) {
             <IconButton
               disabled={
                 props.loading ||
-                page === totalPages ||
+                props.page === totalPages ||
                 props.data.length === 0 ||
-                props.totalItems === 0
+                props.totalItems === 0 ||
+                showLoading
               }
               icon={nextPageIcon}
               plain={true}
@@ -312,9 +317,8 @@ function PaginationTable(props: TableType) {
               bgColor="#5b6c7c"
               iconColor="#6d8294"
               onClick={() => {
-                setPage((prev: number) => {
-                  return prev + 1;
-                });
+                // notify the page changed
+                props.onPageChange(props.page + 1);
               }}
             ></IconButton>
 
@@ -322,9 +326,10 @@ function PaginationTable(props: TableType) {
             <IconButton
               disabled={
                 props.loading ||
-                page === totalPages ||
+                props.page === totalPages ||
                 props.data.length === 0 ||
-                props.totalItems === 0
+                props.totalItems === 0 ||
+                showLoading
               }
               icon={lastPageIcon}
               plain={true}
@@ -332,7 +337,8 @@ function PaginationTable(props: TableType) {
               bgColor="#5b6c7c"
               iconColor="#9aaebb"
               onClick={() => {
-                setPage(totalPages);
+                // notify the page changed
+                props.onPageChange(totalPages);
               }}
             ></IconButton>
           </div>
