@@ -14,18 +14,28 @@ import CustomDialog from "@/components/ui/CustomDialog";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import InputField from "@/components/ui/form/InputField";
 import CustomButton from "@/components/ui/button/CustomButton";
-import { defaultColor } from "@/helper/color";
-import { useNavigate } from "react-router-dom";
-import { generateRoutePath } from "@/router/route";
+import SearchFilterLayout from "@/components/ui/form/SearchFilterLayout";
+import { DropdownItemListInterface } from "@/components/ui/form/DropdownField";
+
+// for form
+interface TagFormInterface {
+  name: string;
+}
+
+const header: Array<TableHeaderType> = [
+  { key: "id", child: "ID" },
+  { key: "name", child: "Name" },
+  { key: "post_count", child: "Count" },
+  { key: "actionEditDelete", child: "" },
+];
+
+const searchFilterList: Array<DropdownItemListInterface> = [
+  { text: "All", value: "" },
+  { text: "Count > 0", value: "used" },
+  { text: "Count <= 0", value: "unused" },
+];
 
 function Tags() {
-  const header: Array<TableHeaderType> = [
-    { key: "id", child: "ID" },
-    { key: "name", child: "Name" },
-    { key: "post_count", child: "Count" },
-    { key: "actionEditDelete", child: "" },
-  ];
-
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
   const [data, setData] = useState([] as Array<TableDataType>);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,12 +43,6 @@ function Tags() {
   const [tableLoading, setTableLoading] = useState(false);
   const [openAddEditDialog, setAddEditDialog] = useState(false);
   const [selectedID, setSelectedID] = useState(-1);
-  const navigate = useNavigate();
-
-  // for form
-  interface TagFormInterface {
-    name: string;
-  }
 
   const addEditDialogForm = useForm<TagFormInterface>({
     mode: "onSubmit",
@@ -50,8 +54,8 @@ function Tags() {
   const addButton: JSX.Element = (
     <IconButton
       icon={addIcon}
-      outlined
       disabled={tableLoading || showLoading}
+      color="accent"
       onClick={(e) => {
         e.stopPropagation();
 
@@ -186,7 +190,14 @@ function Tags() {
   return (
     <>
       <PageHeader rightComponent={addButton}></PageHeader>
-      {/* TODO: add filter */}
+      {/* table filter */}
+      <SearchFilterLayout
+        showSearchBar={true}
+        searchBarPlaceholder="Search Tag Name"
+        showFilter={true}
+        filterItemList={searchFilterList}
+      ></SearchFilterLayout>
+
       <PaginationTable
         header={header}
         data={data}
@@ -226,12 +237,8 @@ function Tags() {
             <CustomButton
               className="mt-6"
               text="Confirm"
-              bgColor={defaultColor.success["DEFAULT"]}
-              textColor="#ffffff"
               type="submit"
               disabled={showLoading}
-              paddingLeft={16}
-              paddingRight={16}
             ></CustomButton>
           </form>
         </FormProvider>

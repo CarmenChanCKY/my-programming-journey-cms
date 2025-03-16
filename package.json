@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/css": "^11.13.4",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "flowbite": "^2.5.2",

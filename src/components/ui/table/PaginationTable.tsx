@@ -1,8 +1,15 @@
-import { CustomFlowbiteTheme, Table, Progress } from "flowbite-react";
+import { Table, Progress } from "flowbite-react";
 import Card from "@/components/ui/card/Card";
 import { useState, useEffect, useContext } from "react";
 import IconButton from "../button/IconButton";
 import { GlobalContext } from "@/context/GlobalContext";
+import {
+  firstPageIcon,
+  lastPageIcon,
+  leftIcon,
+  rightIcon,
+} from "@/components/ui/IconElement";
+import { customProgressTheme, customTableTheme } from "@/helper/flowbiteTheme";
 
 export interface TableHeaderType {
   key: string;
@@ -23,105 +30,6 @@ interface TableType {
   onPageChange: (page: number) => void;
   serverPagination: boolean;
 }
-
-const firstPageIcon: JSX.Element = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    className="size-6 stroke-2"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"
-    />
-  </svg>
-);
-
-const lastPageIcon: JSX.Element = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    className="size-6 stroke-2"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5"
-    />
-  </svg>
-);
-
-const previousPageIcon: JSX.Element = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    className="size-6 stroke-2"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M15.75 19.5 8.25 12l7.5-7.5"
-    />
-  </svg>
-);
-
-const nextPageIcon: JSX.Element = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    className="size-6 stroke-2"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="m8.25 4.5 7.5 7.5-7.5 7.5"
-    />
-  </svg>
-);
-
-// for update flowbite theme
-// table theme
-const customTableTheme: CustomFlowbiteTheme["table"] = {
-  root: {
-    base: "w-full text-left text-sm text-gray-500 divide-y",
-  },
-  head: {
-    base: "group/head text-sm uppercase text-gray-700",
-    cell: {
-      base: "bg-white px-6 py-3 group-first/head:first:rounded-tl-lg group-first/head:last:rounded-tr-lg",
-    },
-  },
-  body: {
-    base: "group/body bg-white divide-y",
-    cell: {
-      base: "px-6 py-2 text-sm group-first/body:group-first/row:first:rounded-tl-lg group-first/body:group-first/row:last:rounded-tr-lg group-last/body:group-last/row:first:rounded-bl-lg group-last/body:group-last/row:last:rounded-br-lg",
-    },
-  },
-  row: {
-    hovered: "hover:bg-gray-50",
-  },
-};
-
-// progress linear theme
-const customProgressTheme: CustomFlowbiteTheme["progress"] = {
-  base: "relative w-full overflow-hidden bg-white",
-  bar: "progress-bar space-x-2 text-center font-medium leading-none",
-  color: {
-    accent: "bg-accent",
-  },
-  size: {
-    xs: "h-1",
-  },
-};
 
 function PaginationTable(props: TableType) {
   const [totalPages, setTotalPages] = useState(1);
@@ -261,7 +169,7 @@ function PaginationTable(props: TableType) {
           <div className="text-xs text-gray-400">
             {props.page} - {totalPages} of {props.totalItems}
           </div>
-          <div>
+          <div className="flex align-center gap-2">
             {/* go to first page */}
             <IconButton
               disabled={
@@ -273,9 +181,8 @@ function PaginationTable(props: TableType) {
               }
               icon={firstPageIcon}
               plain={true}
-              small={true}
-              bgColor="#5b6c7c"
-              iconColor="#9aaebb"
+              size="sm"
+              color="gray"
               onClick={() => {
                 // notify the page changed
                 props.onPageChange(1);
@@ -291,11 +198,10 @@ function PaginationTable(props: TableType) {
                 props.totalItems === 0 ||
                 showLoading
               }
-              icon={previousPageIcon}
+              icon={leftIcon}
               plain={true}
-              small={true}
-              bgColor="#5b6c7c"
-              iconColor="#6d8294"
+              size="sm"
+              color="gray"
               onClick={() => {
                 // notify the page changed
                 props.onPageChange(props.page - 1);
@@ -311,11 +217,10 @@ function PaginationTable(props: TableType) {
                 props.totalItems === 0 ||
                 showLoading
               }
-              icon={nextPageIcon}
+              icon={rightIcon}
               plain={true}
-              small={true}
-              bgColor="#5b6c7c"
-              iconColor="#6d8294"
+              size="sm"
+              color="gray"
               onClick={() => {
                 // notify the page changed
                 props.onPageChange(props.page + 1);
@@ -333,9 +238,8 @@ function PaginationTable(props: TableType) {
               }
               icon={lastPageIcon}
               plain={true}
-              small={true}
-              bgColor="#5b6c7c"
-              iconColor="#9aaebb"
+              size="sm"
+              color="gray"
               onClick={() => {
                 // notify the page changed
                 props.onPageChange(totalPages);

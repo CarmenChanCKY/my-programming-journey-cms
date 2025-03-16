@@ -1,129 +1,49 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { clsx } from "clsx";
-import { css } from "@emotion/css";
-import { genBgHoverActiveColor } from "@/helper/color";
-import "@/styles/button.scss";
+import { Button } from "flowbite-react";
+import { getCustomButtonTheme } from "@/helper/flowbiteTheme";
+
+// https://flowbite-react.com/docs/components/button
 
 interface CustomButtonType {
   text: string;
   type?: "button" | "submit" | "reset";
   className?: string;
-  outlined?: boolean; //
-  plain?: boolean; //
-  bgColor?: string;
-  textColor?: string;
+  color?: string;
+  outline?: boolean;
+  plain?: boolean;
   block?: boolean;
-  small?: boolean;
-  large?: boolean;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   disabled?: boolean;
   loading?: boolean;
-  paddingTop?: number;
-  paddingBottom?: number;
-  paddingLeft?: number;
-  paddingRight?: number;
+  customAttribute?: any;
   onClick?: (e: any) => void;
 }
 
-const setClass = (props: CustomButtonType) => {
-  const classList: Array<string> = ["btn"];
-
-  if (props.className !== undefined) {
-    classList.push(props.className);
-  }
-
-  if (props.outlined) {
-    classList.push("btn-outlined");
-  } else if (props.plain) {
-    classList.push("btn-plain");
-  } else {
-    classList.push("btn-normal");
-  }
-
-  if (props.block) {
-    classList.push("w-full");
-  }
-
-  if (props.small) {
-    classList.push("btn-small");
-  }
-
-  if (props.large) {
-    classList.push("btn-large");
-  }
-
-  if (props.disabled || props.loading) {
-    classList.push("btn-disabled");
-  }
-
-  return classList;
-};
-
-const customBtnStyle = (props: CustomButtonType) => {
-  const style: any = {};
-  const hoverStyle: any = {};
-  const activeStyle: any = {};
-
-  if (!props.disabled) {
-    if (props.bgColor) {
-      const genColor = genBgHoverActiveColor(props.bgColor);
-      style.backgroundColor = genColor.bgColor;
-      hoverStyle.backgroundColor = genColor.hoverColor;
-      activeStyle.backgroundColor = genColor.activeColor;
-    }
-
-    if (props.textColor) {
-      style.color = props.textColor;
-    }
-  }
-
-  if (!props.disabled && !props.loading) {
-    // hover style
-    if (Object.keys(hoverStyle).length > 0) {
-      style["&:hover"] = hoverStyle;
-    }
-
-    // active style
-    if (Object.keys(activeStyle).length > 0) {
-      style["&:active"] = activeStyle;
-    }
-  }
-
-  if (props.paddingTop) {
-    style.paddingTop = `${props.paddingTop}px`;
-  }
-
-  if (props.paddingBottom) {
-    style.paddingBottom = `${props.paddingBottom}px`;
-  }
-
-  if (props.paddingLeft) {
-    style.paddingLeft = `${props.paddingLeft}px`;
-  }
-
-  if (props.paddingRight) {
-    style.paddingRight = `${props.paddingRight}px`;
-  }
-
-  return css(style);
-};
-
 function CustomButton(props: CustomButtonType) {
   return (
-    <button
-      type={props.type ?? "button"}
-      className={clsx(setClass(props), customBtnStyle(props))}
-      onClick={(e: any) => {
-        !props.loading && !props.disabled && props.onClick
-          ? props.onClick!(e)
-          : undefined;
-      }}
+    <Button
+      type={
+        props.disabled || props.loading ? undefined : props.type ?? "button"
+      }
+      className={clsx(props.className)}
+      theme={getCustomButtonTheme(props.outline, props.plain)}
+      color={props.color ?? "primary"}
+      size={props.size ?? "md"}
+      outline={props.outline}
+      fullSized={props.block}
+      isProcessing={props.loading}
       disabled={props.loading || props.disabled}
+      onClick={(e: any) => {
+        if (props.onClick !== undefined && props.onClick !== null) {
+          if (props.loading || props.disabled) {
+          } else {
+            props.onClick!(e);
+          }
+        }
+      }}
     >
-      <div className="btn-content" style={{ opacity: props.loading ? 0 : 1 }}>
-        {props.text}
-      </div>
-      {props.loading ? <div className="btn-spinner"></div> : null}
-    </button>
+      {props.text}
+    </Button>
   );
 }
 

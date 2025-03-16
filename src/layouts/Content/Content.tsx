@@ -36,20 +36,18 @@ function Content() {
   }, [location.pathname]);
 
   return (
-    <div className={"min-h-full"}>
-      <div className={"min-h-full my-4 px-4 mx-auto max-w-[1000px]"}>
-        {/* drawer and cms name */}
+    <div className={"min-h-full py-4 px-4 mx-auto max-w-[1000px]"}>
+      {/* drawer and cms name */}
 
-        <div className="flex items-center justify-start mb-10">
-          <CustomDrawer currentPath={location.pathname}></CustomDrawer>
-          <span className="ml-6 uppercase text-lg font-bold select-none">
-            My Programming Journey
-          </span>
-        </div>
-
-        {/* page content */}
-        {allowRoute ? <Outlet /> : null}
+      <div className="flex items-center justify-start mb-10">
+        <CustomDrawer currentPath={location.pathname}></CustomDrawer>
+        <span className="ml-6 uppercase text-lg font-bold select-none">
+          My Programming Journey
+        </span>
       </div>
+
+      {/* page content */}
+      {allowRoute ? <Outlet /> : null}
     </div>
   );
 }

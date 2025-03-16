@@ -4,47 +4,47 @@ import { rounding } from "./common";
 // default color list
 const defaultColor = {
   primary: {
-    50: "#eafeff",
-    100: "#cafcff",
-    200: "#9cf7ff",
-    300: "#57eeff",
-    400: "#0cdbff",
-    500: "#00beea",
-    600: "#0096c4",
-    DEFAULT: "#007095", // base
-    800: "#0b5f7f",
-    900: "#0e4f6b",
+    50: "#f5f7fa",
+    100: "#eaeef4",
+    200: "#cfd9e8",
+    300: "#a6bbd3",
+    400: "#7595bb",
+    500: "#5479a3",
+    600: "#3d5a80", // base
+    700: "#354d6f",
+    800: "#2f435d",
+    900: "#2b3a4f",
   },
   secondary: {
-    50: "#f8fafa",
-    100: "#f1f5f6",
-    200: "#e6ecee",
-    300: "#d1dde1",
-    400: "#b6c6cf",
-    DEFAULT: "#9aaebb", // base
-    600: "#8096a7",
-    700: "#6d8294",
-    800: "#5b6c7c",
-    900: "#4c5a66",
+    50: "#f4f8fb",
+    100: "#e8eff6",
+    200: "#cbdfec",
+    300: "#98c1d9", // base
+    400: "#6aa6c6",
+    500: "#478bb0",
+    600: "#357094",
+    700: "#2c5978",
+    800: "#284c64",
+    900: "#254155",
   },
   accent: {
-    50: "#ebfeff",
-    100: "#cefcff",
-    200: "#a2f7ff",
-    300: "#63eefd",
-    400: "#1cdbf4",
-    DEFAULT: "#00b9d4", // base
-    600: "#0397b7",
-    700: "#0a7994",
-    800: "#126178",
-    900: "#145065",
+    50: "#fdf5ef",
+    100: "#fbe8d9",
+    200: "#f7d4bc", // base
+    300: "#f0ac81",
+    400: "#e8804f",
+    500: "#e35f2c",
+    600: "#d44822",
+    700: "#b0351e",
+    800: "#8d2d1f",
+    900: "#72271c",
   },
   error: {
     50: "#fff1f1",
     100: "#ffe1e1",
     200: "#ffc7c7",
     300: "#ffa0a0",
-    DEFAULT: "#ff5252", // base
+    400: "#ff5252", // base
     500: "#f83b3b",
     600: "#e51d1d",
     700: "#c11414",
@@ -57,23 +57,11 @@ const defaultColor = {
     200: "#c8eac9",
     300: "#9dd89f",
     400: "#6bbd6e",
-    DEFAULT: "#4caf50", // base
+    500: "#4caf50", // base
     600: "#358438",
     700: "#2d6830",
     800: "#275429",
     900: "#224525",
-  },
-  warning: {
-    50: "#ffffea",
-    100: "#fffbc5",
-    200: "#fff885",
-    300: "#ffee46",
-    400: "#ffdf1b",
-    DEFAULT: "#ffc107", // base
-    600: "#e29400",
-    700: "#bb6902",
-    800: "#985108",
-    900: "#7c420b",
   },
 };
 
@@ -149,8 +137,8 @@ const rgbToHsl = (
   }
 
   h = rounding(h);
-  s = rounding(s * 100);
-  l = rounding(l * 100);
+  s = rounding(s * 100, 1);
+  l = rounding(l * 100, 1);
 
   return { h, s, l };
 };
@@ -165,7 +153,7 @@ const hslCSS = (
 ): string => {
   let updateLValue = l;
   if (isHover) {
-    updateLValue += 10;
+    updateLValue -= 10;
   } else if (isActive) {
     updateLValue -= 8;
   }
@@ -178,38 +166,128 @@ const hslCSS = (
   return `hsl(${h}deg ${s}% ${updateLValue}% / ${opacity})`;
 };
 
-const genBgHoverActiveColor = (
-  hexString: string,
-  hoverOpacity: number = 0.1,
-  activeOpacity: number = 0.2
-) => {
-  const returnProps = {
-    bgColor: "",
-    hoverColor: "",
-    activeColor: "",
-  };
+const colorList: Array<string> = [
+  "primary",
+  "secondary",
+  "accent",
+  "success",
+  "error",
+  "gray",
+];
 
-  const hslColor = hexToHsl(hexString);
-  returnProps.bgColor = hslCSS(hslColor.h, hslColor.s, hslColor.l);
+const getNormalButtonColorTheme = (
+  outline: boolean = false,
+  plain: boolean = false
+): { [key: string]: string } => {
+  const resultColorList: { [key: string]: string } = {};
 
-  returnProps.hoverColor = hslCSS(
-    hslColor.h,
-    hslColor.s,
-    hslColor.l,
-    hoverOpacity,
-    true
-  );
+  const commonTheme = "border border-transparent";
+  const plainTheme = "enabled:hover:bg-opacity-10 enabled:active:bg-opacity-20";
 
-  returnProps.activeColor = hslCSS(
-    hslColor.h,
-    hslColor.s,
-    hslColor.l,
-    activeOpacity,
-    false,
-    true
-  );
+  for (let i = 0; i < colorList.length; i++) {
+    const color = colorList[i];
+    let theme = "";
 
-  return returnProps;
+    if (outline) {
+      // in flowbite-react, if the button is set to outline, it will combine both normal and outline style
+      // set the normal style to empty
+    } else if (plain) {
+      // flowbite-react does not provide plain text button
+      // create the plain text style by replacing normal style
+      theme = plainTheme;
+      switch (color) {
+        case "secondary":
+          theme = `${theme} text-secondary-400 enabled:hover:bg-secondary-400 enabled:active:bg-secondary-500`;
+          break;
+        case "accent":
+          theme = `${theme} text-accent-300 enabled:hover:bg-accent-300 enabled:active:bg-accent-400`;
+          break;
+        case "error":
+          theme = `${theme} text-error-400 enabled:hover:bg-error-400 enabled:active:bg-error-500`;
+          break;
+        case "success":
+          theme = `${theme} text-success-400 enabled:hover:bg-success-400 enabled:active:bg-success-500`;
+          break;
+        case "gray":
+          theme = `${theme} text-gray-400 enabled:hover:bg-gray-400 enabled:active:bg-success-500`;
+          break;
+        default:
+          // default: primary
+          theme = `${theme} text-primary-500 enabled:hover:bg-primary-600 enabled:active:bg-primary-600`;
+          break;
+      }
+    } else {
+      theme = commonTheme;
+      switch (color) {
+        case "secondary":
+          theme = `${theme} bg-secondary-500 text-white enabled:hover:bg-secondary-600 enabled:active:bg-secondary-700`;
+          break;
+        case "accent":
+          theme = `${theme} bg-accent-300 text-white enabled:hover:bg-accent-400 enabled:active:bg-accent-500`;
+          break;
+        case "error":
+          theme = `${theme} bg-error-400 text-white enabled:hover:bg-error-500 enabled:active:bg-error-600`;
+          break;
+        case "success":
+          theme = `${theme} bg-success-400 text-white enabled:hover:bg-success-500 enabled:active:bg-success-600`;
+          break;
+        case "gray":
+          theme = `${theme} bg-gray-400 text-white enabled:hover:bg-gray-500 enabled:active:bg-gray-600`;
+          break;
+        default:
+          // default: primary
+          theme = `${theme} bg-primary-500 text-white enabled:hover:bg-primary-600 enabled:active:bg-primary-700`;
+          break;
+      }
+    }
+
+    resultColorList[color] = theme;
+  }
+
+  return resultColorList;
 };
 
-export { genBgHoverActiveColor, defaultColor, defaultTextColor };
+const getOutlineButtonColorTheme = (): { [key: string]: string } => {
+  const resultColorList: { [key: string]: string } = {};
+
+  const commonTheme =
+    "border enabled:hover:bg-opacity-10 enabled:active:bg-opacity-20";
+
+  for (let i = 0; i < colorList.length; i++) {
+    const color = colorList[i];
+
+    let theme = commonTheme;
+    switch (color) {
+      case "secondary":
+        theme = `${theme} border-secondary-400 text-secondary-400 enabled:hover:bg-secondary-400`;
+        break;
+      case "accent":
+        theme = `${theme} border-accent-300 text-accent-300 enabled:hover:bg-accent-300`;
+        break;
+      case "error":
+        theme = `${theme} border-error-300 text-error-300 enabled:hover:bg-error-300`;
+        break;
+      case "success":
+        theme = `${theme} border-success-400 text-success-400 enabled:hover:bg-success-400`;
+        break;
+      case "gray":
+        theme = `${theme} border-gray-400 text-gray-400 enabled:hover:bg-gray-400`;
+        break;
+      default:
+        // default: primary
+        theme = `${theme} border-primary-600 text-primary-600 enabled:hover:bg-primary-600`;
+        break;
+    }
+
+    resultColorList[color] = theme;
+  }
+
+  return resultColorList;
+};
+
+export {
+  defaultColor,
+  defaultTextColor,
+  getNormalButtonColorTheme,
+  getOutlineButtonColorTheme,
+};

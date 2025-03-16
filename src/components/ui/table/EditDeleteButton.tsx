@@ -1,6 +1,5 @@
 import IconButton from "@/components/ui/button/IconButton";
 import { editIcon, deleteIcon } from "@/components/ui/IconElement";
-import { defaultColor } from "@/helper/color";
 
 function EditDeleteButton({
   editCallback,
@@ -14,8 +13,7 @@ function EditDeleteButton({
       <IconButton
         icon={editIcon}
         plain
-        bgColor={defaultColor.success[800]}
-        iconColor={defaultColor.success["DEFAULT"]}
+        color="success"
         onClick={(e: any) => {
           e.stopPropagation();
           editCallback();
@@ -24,8 +22,7 @@ function EditDeleteButton({
       <IconButton
         icon={deleteIcon}
         plain
-        bgColor={defaultColor.error[800]}
-        iconColor={defaultColor.error["DEFAULT"]}
+        color="error"
         onClick={(e: any) => {
           e.stopPropagation();
           deleteCallback();

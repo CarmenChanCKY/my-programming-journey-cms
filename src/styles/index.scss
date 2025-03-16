@@ -1,7 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400..700;1,400..700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@mixin form-field {
+  @apply p-2;
+  @apply text-sm;
+  @apply placeholder:text-gray-300;
+  @apply rounded-[6px] !important;
+  @apply border-none outline-none ring-[1px] ring-slate-300;
+  @apply focus:ring-2 focus:ring-primary-600 focus:border-none focus:outline-none !important;
+}
 
 @layer base {
   * {
@@ -20,14 +30,8 @@
   }
 
   input {
-    @apply p-2;
-    @apply text-sm;
-    @apply placeholder:text-gray-400;
-    @apply rounded-[6px] !important;
-    @apply border-none outline-none ring-[1px] ring-slate-300;
-    @apply focus:ring-2 focus:ring-primary focus:border-none focus:outline-none;
-    //@apply invalid:ring-0 invalid:ring-inherit invalid:border-none invalid:outline-none;
-    //@apply focus:invalid:ring-2 focus:invalid:ring-error focus:invalid:border-none focus:invalid:outline-none;
+    @include form-field;
+
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -50,6 +54,7 @@
 
       & > svg {
         @apply size-5;
+        height: inherit;
       }
     }
 
@@ -86,12 +91,12 @@
   }
 
   .error-field {
-    @apply ring-[1px] ring-error focus:ring-2 focus:ring-error;
+    @apply ring-[1px] ring-error-400 focus:ring-2 focus:ring-error-400 !important;
   }
 
   .error-msg {
     margin-top: 5px;
-    @apply text-error text-[0.667rem];
+    @apply text-error-400 text-[0.667rem];
   }
 
   /* loading spinner */
@@ -99,7 +104,7 @@
     @apply bg-[#1717174a] h-full w-full fixed top-0 left-0 flex items-center justify-center;
 
     & > .spinner {
-      @apply border-[#9f9f9f] size-[60px] rounded-[50%] border-[5px] border-b-accent animate-spin;
+      @apply border-[#9f9f9f] size-[60px] rounded-[50%] border-[5px] border-b-accent-400 animate-spin;
     }
   }
 
@@ -126,7 +131,7 @@
       @apply border-success-300 bg-success-50;
 
       & > svg {
-        @apply fill-success;
+        @apply fill-success-500;
       }
 
       & > div {
@@ -138,7 +143,7 @@
       @apply border-error-300 bg-error-50;
 
       & > svg {
-        @apply fill-error;
+        @apply fill-error-400;
       }
 
       & > div {
@@ -150,7 +155,7 @@
       @apply border-secondary-300 bg-secondary-50;
 
       & > svg {
-        @apply fill-secondary;
+        @apply fill-secondary-600;
       }
 
       & > div {
@@ -166,7 +171,7 @@
 
     &:hover {
       & > span::after {
-        @apply w-full bg-primary-200 bg-opacity-40;
+        @apply w-full bg-secondary-300 bg-opacity-40;
       }
     }
 
@@ -185,7 +190,7 @@
       & > span {
         &::after {
           content: "";
-          @apply w-full bg-primary-200 bg-opacity-40;
+          @apply w-full bg-secondary-300 bg-opacity-40;
         }
       }
     }

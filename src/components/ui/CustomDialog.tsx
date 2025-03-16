@@ -1,4 +1,5 @@
-import { CustomFlowbiteTheme, Modal } from "flowbite-react";
+import { customDialogTheme } from "@/helper/flowbiteTheme";
+import { Modal } from "flowbite-react";
 
 interface DialogInterface {
   open: boolean;
@@ -9,15 +10,6 @@ interface DialogInterface {
 }
 
 function CustomDialog(props: DialogInterface) {
-  const customDialogTheme: CustomFlowbiteTheme["modal"] = {
-    content: {
-      base: "relative w-full p-4 md:h-auto",
-    },
-    header: {
-      base: "flex items-start justify-between rounded-t border-b px-5 py-3 dark:border-gray-600",
-    },
-  };
-
   return (
     <Modal
       show={props.open}

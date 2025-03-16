@@ -11,16 +11,18 @@ import {
 interface InputFieldType {
   id: string;
   name: string;
+  className?: string;
+  inputClassName?: string;
   type?: string;
   labelText?: string;
   placeholder?: string;
-  themeColor?: string;
   prefixText?: string;
   prefixIcon?: React.ReactNode;
   suffixText?: string;
   suffixIcon?: React.ReactNode;
   disabled?: boolean;
   readonly?: boolean;
+  customAttribute?: any;
 
   // validate params
   required?: boolean;
@@ -84,7 +86,10 @@ function InputField(props: InputFieldType) {
         </label>
       ) : null}
 
-      <div className="relative rounded-md input-field">
+      <div
+        className={clsx("relative rounded-md input-field", props.className)}
+        {...props.customAttribute}
+      >
         {/* prefix element */}
         {props.prefixIcon ? (
           props.prefixIcon
@@ -95,7 +100,7 @@ function InputField(props: InputFieldType) {
         <input
           {...register(props.name, {
             disabled: props.disabled,
-            required: { value: true, message: "Required." },
+            required: { value: props.required ?? false, message: "Required." },
             validate: (v) => {
               if (props.validateEmail) {
                 return new RegExp(emailRegex).test(v) ? true : "Email invalid.";
@@ -123,11 +128,12 @@ function InputField(props: InputFieldType) {
               return true;
             },
           })}
+          readOnly={props.readonly}
           id={props.id}
           name={props.name}
           type={props.type ?? "text"}
           placeholder={props.placeholder}
-          className={clsx(setInputClass(props, invalid))}
+          className={clsx(setInputClass(props, invalid), props.inputClassName)}
           onBeforeInput={(e: any) => {
             return formatInput(e, props);
           }}

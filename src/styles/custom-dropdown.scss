@@ -1,0 +1,21 @@
+.dropdown-field {
+    @apply relative;
+
+    .suffix-icon {
+      & svg {
+        @apply text-gray-400;
+      }
+    }
+
+    .custom-dropdown-list {
+      @apply bg-white rounded-[6px] shadow-sm z-[99] w-full border-[1px] border-gray-200;
+
+      & ul {
+        @apply text-sm text-gray-700;
+      }
+
+      & li {
+        @apply px-3 py-2 cursor-pointer hover:bg-gray-100;
+      }
+    }
+  }

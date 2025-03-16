@@ -5,34 +5,20 @@ import { generateRoutePath, navBarContent } from "@/router/route";
 import { Link, useNavigate } from "react-router-dom";
 import { clsx } from "clsx";
 import { cmsSignout } from "@/helper/fetcher";
+import { hamburgerIcon } from "@/components/ui/IconElement";
 
 function CustomDrawer({ currentPath }: { currentPath: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
-  const hamburgerIcon: JSX.Element = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="size-6"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-      />
-    </svg>
-  );
-
   return (
     <>
       {/* button to open navigation drawer */}
+
       <IconButton
         icon={hamburgerIcon}
-        outlined={true}
+        outline
+        color="secondary"
         customAttribute={{
           "data-drawer-target": "drawer-navigation",
           "data-drawer-show": "drawer-navigation",
