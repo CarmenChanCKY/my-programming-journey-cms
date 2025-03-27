@@ -4,20 +4,26 @@ import CustomButton from "@/components/ui/button/CustomButton";
 import DropdownField, {
   DropdownItemListInterface,
 } from "@/components/ui/form/DropdownField";
+import { GlobalContext } from "@/context/GlobalContext";
+import { useContext } from "react";
+import { searchDropdownValueByText } from "@/helper/common";
 
 interface SearchFilterLayoutInterface {
   showSearchBar?: boolean;
   searchBarPlaceholder?: string;
   showFilter?: boolean;
   filterItemList?: Array<DropdownItemListInterface>;
+  onSubmit: (returnValue: SearchFilterFormInterface) => void;
 }
 
-interface SearchFilterFormInterface {
+export interface SearchFilterFormInterface {
   searchField: string;
   filterField: string;
 }
 
 function SearchFilterLayout(props: SearchFilterLayoutInterface) {
+  const { showLoading, tableLoading } = useContext(GlobalContext);
+
   const searchFilterForm = useForm<SearchFilterFormInterface>({
     mode: "onSubmit",
     defaultValues: {
@@ -34,7 +40,19 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
   const onSearchFilterFormSubmit: SubmitHandler<
     SearchFilterFormInterface
   > = async (data: SearchFilterFormInterface) => {
-    console.log(data);
+    if (
+      props.filterItemList !== undefined &&
+      props.filterItemList !== null &&
+      props.filterItemList.length > 0 &&
+      data.filterField !== ""
+    ) {
+      data.filterField = searchDropdownValueByText(
+        data.filterField,
+        props.filterItemList
+      );
+    }
+
+    props.onSubmit(data);
   };
 
   return (
@@ -52,6 +70,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
               id="search-input-field"
               name="searchField"
               placeholder={props.searchBarPlaceholder}
+              disabled={showLoading || tableLoading}
             ></InputField>
           )}
 
@@ -62,6 +81,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
               dropdownListID="search-filter-list"
               name="filterField"
               itemList={props.filterItemList ?? []}
+              disabled={showLoading || tableLoading}
             ></DropdownField>
           )}
 
@@ -70,6 +90,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
             outline={true}
             color="success"
             type="submit"
+            disabled={showLoading || tableLoading}
           ></CustomButton>
         </div>
       </form>

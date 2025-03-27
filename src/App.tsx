@@ -29,7 +29,7 @@ function MainContent() {
 
       {/* snack bar */}
       {toastList.length > 0 ? (
-        <div className="fixed top-5 right-5">
+        <div className="fixed top-5 right-5" style={{ "zIndex": 10000 }}>
           {toastList.map((toastData: ToastReducerType, index: number) => {
             return <Toast {...toastData} index={index} key={toastData.id} />;
           })}

@@ -24,6 +24,7 @@ function Login() {
 
   const form = useForm<LoginFormInterface>({
     mode: "onSubmit",
+    disabled: showLoading,
     defaultValues: {
       email: "",
       password: "",
@@ -88,6 +89,7 @@ function Login() {
                     required={true}
                     validateEmail={true}
                     labelText="Email"
+                    disabled={showLoading}
                   ></InputField>
                 </GridColumn>
 
@@ -100,6 +102,7 @@ function Login() {
                     name="password"
                     labelText="Password"
                     suffixIcon={passwordIcon()}
+                    disabled={showLoading}
                   ></InputField>
                 </GridColumn>
               </GridRow>

@@ -23,7 +23,6 @@ export interface TableDataType {
 interface TableType {
   header: Array<TableHeaderType>;
   data: Array<TableDataType>;
-  loading: boolean;
   page: number;
   totalItems: number;
   itemsPerPage: number;
@@ -34,7 +33,7 @@ interface TableType {
 function PaginationTable(props: TableType) {
   const [totalPages, setTotalPages] = useState(1);
   const [formatData, setFormatData] = useState([] as Array<Array<JSX.Element>>);
-  const { showLoading } = useContext(GlobalContext);
+  const { showLoading, tableLoading } = useContext(GlobalContext);
 
   // format table data
   const getTableData = (): Array<Array<JSX.Element>> => {
@@ -110,144 +109,146 @@ function PaginationTable(props: TableType) {
 
   return (
     <div className="overflow-x-auto">
-      <Table theme={customTableTheme} hoverable>
-        <Table.Head>
-          {/* table header */}
-          {props.header.map((header: TableHeaderType) => {
-            return (
-              <Table.HeadCell key={`header_${header.key}`}>
-                {typeof header.child === "string" ? (
-                  <span>{header.child}</span>
-                ) : (
-                  header.child
-                )}
-              </Table.HeadCell>
-            );
-          })}
-        </Table.Head>
+      <div className="min-w-max">
+        <Table theme={customTableTheme} hoverable>
+          <Table.Head>
+            {/* table header */}
+            {props.header.map((header: TableHeaderType) => {
+              return (
+                <Table.HeadCell key={`header_${header.key}`}>
+                  {typeof header.child === "string" ? (
+                    <span>{header.child}</span>
+                  ) : (
+                    header.child
+                  )}
+                </Table.HeadCell>
+              );
+            })}
+          </Table.Head>
 
-        {/* table content */}
-        <Table.Body className="divide-y">
-          {/* loading row */}
-          {props.loading ? (
-            <Table.Row className="hover:bg-transparent">
-              <Table.Cell
-                className="pt-0 pl-0 pr-0"
-                colSpan={props.header.length}
-              >
-                <Progress
-                  progress={100}
-                  size="xs"
-                  color="accent"
-                  theme={customProgressTheme}
-                ></Progress>
-                <p className="text-center mt-3">Loading...</p>
-              </Table.Cell>
-            </Table.Row>
-          ) : props.data.length > 0 ? (
-            /* formatted data row */
-            formatData.map((row: Array<JSX.Element>, index: number) => {
-              return <Table.Row key={`data_${index}`}>{row}</Table.Row>;
-            })
-          ) : (
-            /* No data text */
-            <Table.Row className="hover:bg-transparent">
-              <Table.Cell colSpan={props.header.length}>
-                <p className="text-center">No Data</p>
-              </Table.Cell>
-            </Table.Row>
-          )}
-        </Table.Body>
-      </Table>
+          {/* table content */}
+          <Table.Body className="divide-y">
+            {/* loading row */}
+            {tableLoading ? (
+              <Table.Row className="hover:bg-transparent">
+                <Table.Cell
+                  className="pt-0 pl-0 pr-0"
+                  colSpan={props.header.length}
+                >
+                  <Progress
+                    progress={100}
+                    size="xs"
+                    color="accent"
+                    theme={customProgressTheme}
+                  ></Progress>
+                  <p className="text-center mt-3">Loading...</p>
+                </Table.Cell>
+              </Table.Row>
+            ) : props.data.length > 0 ? (
+              /* formatted data row */
+              formatData.map((row: Array<JSX.Element>, index: number) => {
+                return <Table.Row key={`data_${index}`}>{row}</Table.Row>;
+              })
+            ) : (
+              /* No data text */
+              <Table.Row className="hover:bg-transparent">
+                <Table.Cell colSpan={props.header.length}>
+                  <p className="text-center">No Data</p>
+                </Table.Cell>
+              </Table.Row>
+            )}
+          </Table.Body>
+        </Table>
 
-      {/* pagination */}
-      <Card
-        flat={true}
-        className="border-[#E5E7EB] border-solid border-t rounded-t-[0px]"
-      >
-        <div className="flex items-center justify-between text-wrap">
-          <div className="text-xs text-gray-400">
-            {props.page} - {totalPages} of {props.totalItems}
+        {/* pagination */}
+        <Card
+          flat={true}
+          className="border-[#E5E7EB] border-solid border-t rounded-t-[0px]"
+        >
+          <div className="flex items-center justify-between text-wrap">
+            <div className="text-xs text-gray-400">
+              {props.page} - {totalPages} of {props.totalItems}
+            </div>
+            <div className="flex align-center gap-2">
+              {/* go to first page */}
+              <IconButton
+                disabled={
+                  tableLoading ||
+                  props.page === 1 ||
+                  props.data.length === 0 ||
+                  props.totalItems === 0 ||
+                  showLoading
+                }
+                icon={firstPageIcon}
+                plain={true}
+                size="sm"
+                color="gray"
+                onClick={() => {
+                  // notify the page changed
+                  props.onPageChange(1);
+                }}
+              ></IconButton>
+
+              {/* previous page */}
+              <IconButton
+                disabled={
+                  tableLoading ||
+                  props.page === 1 ||
+                  props.data.length === 0 ||
+                  props.totalItems === 0 ||
+                  showLoading
+                }
+                icon={leftIcon}
+                plain={true}
+                size="sm"
+                color="gray"
+                onClick={() => {
+                  // notify the page changed
+                  props.onPageChange(props.page - 1);
+                }}
+              ></IconButton>
+
+              {/* next page */}
+              <IconButton
+                disabled={
+                  tableLoading ||
+                  props.page === totalPages ||
+                  props.data.length === 0 ||
+                  props.totalItems === 0 ||
+                  showLoading
+                }
+                icon={rightIcon}
+                plain={true}
+                size="sm"
+                color="gray"
+                onClick={() => {
+                  // notify the page changed
+                  props.onPageChange(props.page + 1);
+                }}
+              ></IconButton>
+
+              {/* go to last page */}
+              <IconButton
+                disabled={
+                  tableLoading ||
+                  props.page === totalPages ||
+                  props.data.length === 0 ||
+                  props.totalItems === 0 ||
+                  showLoading
+                }
+                icon={lastPageIcon}
+                plain={true}
+                size="sm"
+                color="gray"
+                onClick={() => {
+                  // notify the page changed
+                  props.onPageChange(totalPages);
+                }}
+              ></IconButton>
+            </div>
           </div>
-          <div className="flex align-center gap-2">
-            {/* go to first page */}
-            <IconButton
-              disabled={
-                props.loading ||
-                props.page === 1 ||
-                props.data.length === 0 ||
-                props.totalItems === 0 ||
-                showLoading
-              }
-              icon={firstPageIcon}
-              plain={true}
-              size="sm"
-              color="gray"
-              onClick={() => {
-                // notify the page changed
-                props.onPageChange(1);
-              }}
-            ></IconButton>
-
-            {/* previous page */}
-            <IconButton
-              disabled={
-                props.loading ||
-                props.page === 1 ||
-                props.data.length === 0 ||
-                props.totalItems === 0 ||
-                showLoading
-              }
-              icon={leftIcon}
-              plain={true}
-              size="sm"
-              color="gray"
-              onClick={() => {
-                // notify the page changed
-                props.onPageChange(props.page - 1);
-              }}
-            ></IconButton>
-
-            {/* next page */}
-            <IconButton
-              disabled={
-                props.loading ||
-                props.page === totalPages ||
-                props.data.length === 0 ||
-                props.totalItems === 0 ||
-                showLoading
-              }
-              icon={rightIcon}
-              plain={true}
-              size="sm"
-              color="gray"
-              onClick={() => {
-                // notify the page changed
-                props.onPageChange(props.page + 1);
-              }}
-            ></IconButton>
-
-            {/* go to last page */}
-            <IconButton
-              disabled={
-                props.loading ||
-                props.page === totalPages ||
-                props.data.length === 0 ||
-                props.totalItems === 0 ||
-                showLoading
-              }
-              icon={lastPageIcon}
-              plain={true}
-              size="sm"
-              color="gray"
-              onClick={() => {
-                // notify the page changed
-                props.onPageChange(totalPages);
-              }}
-            ></IconButton>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

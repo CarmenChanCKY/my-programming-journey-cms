@@ -9,6 +9,10 @@ type GlobalContextType = {
   showLoading: boolean;
   setLoading: (loading: boolean) => void;
 
+  // for table loading state
+  tableLoading: boolean;
+  setTableLoading: (loading: boolean) => void;
+
   // for toast
   toastList: Array<ToastReducerType>;
   toastDispatch: (toastData: ToastReducerType) => void;
@@ -19,6 +23,10 @@ const GlobalContext = createContext<GlobalContextType>({
   showLoading: false,
   setLoading: () => {},
 
+  // for table loading state
+  tableLoading: false,
+  setTableLoading: () => {},
+
   // for toast
   toastList: [],
   toastDispatch: () => {},
@@ -26,6 +34,7 @@ const GlobalContext = createContext<GlobalContextType>({
 
 const GlobalProvider = ({ children }: any) => {
   const [showLoading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [toastList, toastDispatch] = useReducer(ToastReducer, []);
 
   return (
@@ -33,6 +42,8 @@ const GlobalProvider = ({ children }: any) => {
       value={{
         showLoading,
         setLoading,
+        tableLoading,
+        setTableLoading,
         toastList,
         toastDispatch,
       }}

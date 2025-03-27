@@ -99,7 +99,10 @@ function InputField(props: InputFieldType) {
 
         <input
           {...register(props.name, {
-            disabled: props.disabled,
+            setValueAs(value) {
+              // trim the input value
+              return value.trim();
+            },
             required: { value: props.required ?? false, message: "Required." },
             validate: (v) => {
               if (props.validateEmail) {
@@ -128,6 +131,7 @@ function InputField(props: InputFieldType) {
               return true;
             },
           })}
+          disabled={props.disabled}
           readOnly={props.readonly}
           id={props.id}
           name={props.name}

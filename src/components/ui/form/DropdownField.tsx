@@ -6,11 +6,6 @@ import { useEffect, useState } from "react";
 import { Dropdown, DropdownOptions } from "flowbite";
 import { useFormContext } from "react-hook-form";
 
-// TODO:
-// https://codepen.io/miniven/pen/ZJydge
-// https://codesandbox.io/p/sandbox/react-hook-form-radio-buttons-vuqdc?file=%2Fsrc%2FApp.js%3A16%2C14
-// https://flowbite.com/docs/components/dropdowns/#dropdown-example
-
 export interface DropdownItemListInterface {
   text: string;
   value: string;
@@ -29,7 +24,6 @@ interface DropdownFieldInterface {
   suffixText?: string;
   suffixIcon?: React.ReactNode;
   disabled?: boolean;
-  readonly?: boolean;
 
   // validate params
   required?: boolean;

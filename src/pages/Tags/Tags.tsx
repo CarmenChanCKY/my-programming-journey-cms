@@ -5,23 +5,20 @@ import PaginationTable, {
 } from "@/components/ui/table/PaginationTable";
 import { serverApi } from "@/helper/fetcher";
 import { log } from "@/helper/common";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import EditDeleteButton from "@/components/ui/table/EditDeleteButton";
 import IconButton from "@/components/ui/button/IconButton";
 import { addIcon } from "@/components/ui/IconElement";
 import { GlobalContext } from "@/context/GlobalContext";
-import CustomDialog from "@/components/ui/CustomDialog";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import InputField from "@/components/ui/form/InputField";
-import CustomButton from "@/components/ui/button/CustomButton";
-import SearchFilterLayout from "@/components/ui/form/SearchFilterLayout";
+import SearchFilterLayout, {
+  SearchFilterFormInterface,
+} from "@/components/ui/form/SearchFilterLayout";
 import { DropdownItemListInterface } from "@/components/ui/form/DropdownField";
+import AddEditDialogForm, {
+  TagFormInterface,
+} from "@/components/tags/AddEditTagsDialog";
 
 // for form
-interface TagFormInterface {
-  name: string;
-}
-
 const header: Array<TableHeaderType> = [
   { key: "id", child: "ID" },
   { key: "name", child: "Name" },
@@ -36,20 +33,28 @@ const searchFilterList: Array<DropdownItemListInterface> = [
 ];
 
 function Tags() {
-  const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
+  let saveTableData: Array<any> = [];
+  const {
+    showLoading,
+    setLoading,
+    tableLoading,
+    setTableLoading,
+    toastDispatch,
+  } = useContext(GlobalContext);
   const [data, setData] = useState([] as Array<TableDataType>);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const [tableLoading, setTableLoading] = useState(false);
+  const [saveSearchFilterFormValue, updateSearchFilterFormValue] = useState(
+    null as null | SearchFilterFormInterface
+  );
+  const abortControllerRef = useRef(null as null | AbortController);
+
+  // for AddEditDialogForm
   const [openAddEditDialog, setAddEditDialog] = useState(false);
   const [selectedID, setSelectedID] = useState(-1);
-
-  const addEditDialogForm = useForm<TagFormInterface>({
-    mode: "onSubmit",
-    defaultValues: {
-      name: "",
-    },
-  });
+  const [updateValue, setUpdateValue] = useState({
+    name: "",
+  } as TagFormInterface);
 
   const addButton: JSX.Element = (
     <IconButton
@@ -60,7 +65,6 @@ function Tags() {
         e.stopPropagation();
 
         if (!openAddEditDialog) {
-          addEditDialogForm.reset();
           setSelectedID(-1);
           setAddEditDialog(true);
         }
@@ -68,27 +72,89 @@ function Tags() {
     ></IconButton>
   );
 
-  const onAddEditDialogFormSubmit: SubmitHandler<TagFormInterface> = async (
-    data: TagFormInterface
-  ) => {
-    if (selectedID === -1) {
-      addTag(data.name);
-    } else {
-      updateTag(data.name);
+  function onAddEditDialogConfirm(
+    type: "add" | "edit" | "close",
+    formValue?: TagFormInterface
+  ) {
+    if (type === "close") {
+      // close the dialog directly
+      setAddEditDialog(false);
+    } else if (formValue !== undefined && formValue !== null) {
+      if (type === "add") {
+        // add new tag
+        addTag(formValue.name);
+      } else {
+        // format existing tag
+        updateTag(formValue.name);
+      }
     }
-  };
+  }
+
+  // for table button
+  function onPageChanged(page: number) {
+    setCurrentPage(page);
+    updateAbortControllerRef();
+    getTagList(page, saveSearchFilterFormValue);
+  }
+  function onEditButtonClick(id: number, index: number) {
+    if (!openAddEditDialog) {
+      setSelectedID(id);
+      setUpdateValue({ name: saveTableData[index].name });
+      setAddEditDialog(true);
+    }
+  }
+
+  function onRemoveButtonClick(id: number, index: number) {}
+
+  // for search filter field
+  function onSearchFilterValueUpdated(returnValue: SearchFilterFormInterface) {
+    setCurrentPage(1);
+    updateAbortControllerRef();
+    updateSearchFilterFormValue(returnValue);
+    getTagList(1, returnValue);
+  }
+
+  // for abort controller
+  function updateAbortControllerRef() {
+    if (abortControllerRef.current !== null) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+  }
 
   // db function
-  async function getTagList(cancelSignal: AbortController) {
+  async function getTagList(
+    page: number,
+    searchFilterFormValue: SearchFilterFormInterface | null
+  ) {
     setTableLoading(true);
     setData([]);
+
     try {
+      const payload: any = { pages: page };
+
+      if (
+        searchFilterFormValue !== undefined &&
+        searchFilterFormValue !== null &&
+        searchFilterFormValue.searchField !== ""
+      ) {
+        payload.filterName = searchFilterFormValue.searchField;
+      }
+
+      if (
+        searchFilterFormValue !== undefined &&
+        searchFilterFormValue !== null &&
+        searchFilterFormValue.filterField !== ""
+      ) {
+        payload.filterUsedCount = searchFilterFormValue.filterField;
+      }
+
       const result: any = await serverApi(
         "/tags",
         "get",
-        { pages: currentPage },
+        payload,
         {},
-        cancelSignal.signal
+        abortControllerRef.current?.signal
       );
 
       log("--- Get Tag List ---");
@@ -97,16 +163,20 @@ function Tags() {
       if (Array.isArray(result)) {
         setData([]);
         setTotalItems(0);
+        saveTableData = [];
       } else {
+        saveTableData = result.data;
         setData(
           result.data.map((obj: any, index: number) => {
             return {
               ...obj,
               actionEditDelete: EditDeleteButton({
                 editCallback: () => {
-                  console.log(index);
+                  onEditButtonClick(result.data[index].id, index);
                 },
-                deleteCallback: () => {},
+                deleteCallback: () => {
+                  onRemoveButtonClick(result.data[index].id, index);
+                },
               }),
             };
           })
@@ -130,7 +200,7 @@ function Tags() {
 
       try {
         const result: any = await serverApi(
-          "/tags",
+          "/tags/add",
           "post",
           {},
           { name: name }
@@ -138,6 +208,8 @@ function Tags() {
 
         log("--- Add Tag ---");
         log(result);
+
+        setAddEditDialog(false);
 
         toastDispatch({
           actionType: "insert",
@@ -171,21 +243,74 @@ function Tags() {
     }
   }
 
-  async function updateTag(name: string) {}
+  async function updateTag(name: string) {
+    if (!showLoading) {
+      setLoading(true);
+
+      try {
+        const result: any = await serverApi(
+          "/tags/update",
+          "post",
+          {},
+          { id: selectedID, name: name }
+        );
+
+        log("--- Edit Tag ---");
+        log(result);
+
+        toastDispatch({
+          actionType: "insert",
+          text: "Edit Tag Success",
+          type: "success",
+          onToastDismiss: () => {
+            setLoading(false);
+            setAddEditDialog(false);
+            updateAbortControllerRef();
+
+            // get tag list by page and limit
+            getTagList(currentPage, saveSearchFilterFormValue);
+          },
+        });
+      } catch (error: any) {
+        log("--- Edit Tag Fail ---");
+        log(error);
+
+        let message = "Edit Tag Fail";
+
+        switch (error.description) {
+          case "tag exists":
+            message = "Tag Name Exists";
+            break;
+        }
+
+        toastDispatch({
+          actionType: "insert",
+          text: message,
+          type: "error",
+          onToastDismiss: () => {
+            setLoading(false);
+          },
+        });
+      }
+    }
+  }
 
   async function removeTag() {}
 
   useEffect(() => {
-    const controller = new AbortController();
+    updateAbortControllerRef();
     // get tag list by page and limit
-    getTagList(controller);
+    getTagList(currentPage, saveSearchFilterFormValue);
 
     return () => {
       // cancel the previous request
       setTableLoading(false);
-      controller.abort();
+      if (abortControllerRef.current !== null) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
     };
-  }, [currentPage]);
+  }, []);
 
   return (
     <>
@@ -196,53 +321,27 @@ function Tags() {
         searchBarPlaceholder="Search Tag Name"
         showFilter={true}
         filterItemList={searchFilterList}
+        onSubmit={onSearchFilterValueUpdated}
       ></SearchFilterLayout>
 
       <PaginationTable
         header={header}
         data={data}
-        loading={tableLoading}
         page={currentPage}
         totalItems={totalItems}
         itemsPerPage={10}
-        onPageChange={(page: number) => {
-          setCurrentPage(page);
-        }}
+        onPageChange={onPageChanged}
         serverPagination={true}
       ></PaginationTable>
 
       {/* for add / edit tag dialog */}
-      <CustomDialog
-        open={openAddEditDialog}
-        title={selectedID === -1 ? "Add Tag" : "Edit Tag"}
-        onClose={() => {
-          if (!showLoading) {
-            setAddEditDialog(false);
-          }
-        }}
-      >
-        <FormProvider {...addEditDialogForm}>
-          <form
-            onSubmit={addEditDialogForm.handleSubmit(onAddEditDialogFormSubmit)}
-            noValidate
-            autoComplete="off"
-          >
-            <InputField
-              id="name"
-              name="name"
-              required={true}
-              labelText="Tag Name"
-            ></InputField>
-
-            <CustomButton
-              className="mt-6"
-              text="Confirm"
-              type="submit"
-              disabled={showLoading}
-            ></CustomButton>
-          </form>
-        </FormProvider>
-      </CustomDialog>
+      <AddEditDialogForm
+        openAddEditDialog={openAddEditDialog}
+        selectedID={selectedID}
+        showLoading={showLoading || tableLoading}
+        editValue={updateValue}
+        callback={onAddEditDialogConfirm}
+      ></AddEditDialogForm>
     </>
   );
 }

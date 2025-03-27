@@ -24,8 +24,8 @@ function Toast(props: ToastReducerType & { index: number }) {
 
   // auto remove from toast list
   useEffect(() => {
-    // default hide duration is 3 second
-    const hideDuration = props.duration ?? 3000;
+    // default hide duration is 2.5 second
+    const hideDuration = props.duration ?? 2500;
     const hideTimeout = setTimeout(() => {
       // add hide animation
       toastRef.current?.classList.add("toast-animation-remove");

@@ -1,3 +1,5 @@
+import { DropdownItemListInterface } from "@/components/ui/form/DropdownField";
+
 const log = (msg: any) => {
   if (
     window.location.href.includes("localhost") ||
@@ -34,4 +36,25 @@ const generateRandomString = (len: number): string => {
   return result;
 };
 
-export { log, errorLog, rounding, generateRandomString };
+const searchDropdownValueByText = (
+  text: string,
+  itemList: Array<DropdownItemListInterface>
+) => {
+  const index = itemList.findIndex((obj) => {
+    return obj.text === text;
+  });
+
+  if (index !== -1) {
+    return itemList[index].value;
+  }
+
+  return "";
+};
+
+export {
+  log,
+  errorLog,
+  rounding,
+  generateRandomString,
+  searchDropdownValueByText,
+};
