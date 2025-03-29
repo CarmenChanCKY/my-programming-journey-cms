@@ -17,7 +17,7 @@ function CustomDialog(props: DialogInterface) {
       theme={customDialogTheme}
       position="center"
     >
-      <Modal.Header>{props.title}</Modal.Header>
+      <Modal.Header className="items-center">{props.title}</Modal.Header>
       <Modal.Body>{props.children}</Modal.Body>
     </Modal>
   );

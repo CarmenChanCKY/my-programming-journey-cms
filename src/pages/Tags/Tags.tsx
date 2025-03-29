@@ -17,6 +17,7 @@ import { DropdownItemListInterface } from "@/components/ui/form/DropdownField";
 import AddEditDialogForm, {
   TagFormInterface,
 } from "@/components/tags/AddEditTagsDialog";
+import DeleteDialog from "@/components/ui/DeleteDialog";
 
 // for form
 const header: Array<TableHeaderType> = [
@@ -32,8 +33,9 @@ const searchFilterList: Array<DropdownItemListInterface> = [
   { text: "Count <= 0", value: "unused" },
 ];
 
+let saveTableData: Array<any> = [];
+
 function Tags() {
-  let saveTableData: Array<any> = [];
   const {
     showLoading,
     setLoading,
@@ -56,6 +58,15 @@ function Tags() {
     name: "",
   } as TagFormInterface);
 
+  // for delete dialog
+  const [openDeleteDialog, setDeleteDialog] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState(-1);
+  const removeItem =
+    saveTableData.length <= 0 || deleteIndex === -1
+      ? ""
+      : saveTableData[deleteIndex].name;
+
+  // for AddEditDialogForm
   const addButton: JSX.Element = (
     <IconButton
       icon={addIcon}
@@ -90,12 +101,23 @@ function Tags() {
     }
   }
 
+  // for delete dialog
+  function onDeleteDialogConfirm(type: "confirm" | "close") {
+    if (type === "close") {
+      // close the dialog directly
+      setDeleteDialog(false);
+    } else {
+      removeTag();
+    }
+  }
+
   // for table button
   function onPageChanged(page: number) {
     setCurrentPage(page);
     updateAbortControllerRef();
     getTagList(page, saveSearchFilterFormValue);
   }
+
   function onEditButtonClick(id: number, index: number) {
     if (!openAddEditDialog) {
       setSelectedID(id);
@@ -104,7 +126,12 @@ function Tags() {
     }
   }
 
-  function onRemoveButtonClick(id: number, index: number) {}
+  function onRemoveButtonClick(id: number, index: number) {
+    if (!openDeleteDialog) {
+      setDeleteIndex(index);
+      setDeleteDialog(true);
+    }
+  }
 
   // for search filter field
   function onSearchFilterValueUpdated(returnValue: SearchFilterFormInterface) {
@@ -295,7 +322,56 @@ function Tags() {
     }
   }
 
-  async function removeTag() {}
+  async function removeTag() {
+    if (!showLoading) {
+      setLoading(true);
+
+      try {
+        const id = parseInt(saveTableData[deleteIndex].id, 10);
+        const result: any = await serverApi(`/tags/delete`, "post", {}, { id });
+
+        log("--- Remove Tag ---");
+        log(result);
+
+        toastDispatch({
+          actionType: "insert",
+          text: "Remove Tag Success",
+          type: "success",
+          onToastDismiss: () => {
+            setLoading(false);
+            setDeleteDialog(false);
+            updateAbortControllerRef();
+
+            // get tag list by page and limit
+            getTagList(currentPage, saveSearchFilterFormValue);
+          },
+        });
+      } catch (error: any) {
+        log("--- Remove Tag Fail ---");
+        log(error);
+
+        let message = "Remove Tag Fail";
+
+        switch (error.description) {
+          case "tag not found":
+            message = "Tag not found";
+            break;
+          case "tag has been used":
+            message = "Tag has been used";
+            break;
+        }
+
+        toastDispatch({
+          actionType: "insert",
+          text: message,
+          type: "error",
+          onToastDismiss: () => {
+            setLoading(false);
+          },
+        });
+      }
+    }
+  }
 
   useEffect(() => {
     updateAbortControllerRef();
@@ -342,6 +418,14 @@ function Tags() {
         editValue={updateValue}
         callback={onAddEditDialogConfirm}
       ></AddEditDialogForm>
+
+      {/* for delete tag dialog */}
+      <DeleteDialog
+        openDeleteDialog={openDeleteDialog}
+        removeItem={removeItem}
+        showLoading={showLoading || tableLoading}
+        callback={onDeleteDialogConfirm}
+      ></DeleteDialog>
     </>
   );
 }
