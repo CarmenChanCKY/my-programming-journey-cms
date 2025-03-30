@@ -1,34 +1,35 @@
-import CustomDialog from "@/components/ui/CustomDialog";
+import CustomDialog from "@/components/ui/dialog/CustomDialog";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import InputField from "@/components/ui/form/InputField";
 import CustomButton from "@/components/ui/button/CustomButton";
 import { useEffect } from "react";
 
-interface AddEditTagsDialogInterface {
+interface AddEditDialogInterface {
   openAddEditDialog: boolean;
+  title: string;
   selectedID: number;
-  editValue?: TagFormInterface;
+  editValue?: AddEditFormInterface;
   showLoading: boolean;
   callback: (
     type: "add" | "edit" | "close",
-    formValue?: TagFormInterface
+    formValue?: AddEditFormInterface
   ) => void;
 }
 
-export interface TagFormInterface {
+export interface AddEditFormInterface {
   name: string;
 }
 
-function addEditDialogForm(props: AddEditTagsDialogInterface) {
-  const addEditDialogForm = useForm<TagFormInterface>({
+function AddEditDialogForm(props: AddEditDialogInterface) {
+  const addEditDialogForm = useForm<AddEditFormInterface>({
     mode: "onSubmit",
     defaultValues: {
       name: props.editValue?.name ?? "",
     },
   });
 
-  const onAddEditDialogFormSubmit: SubmitHandler<TagFormInterface> = async (
-    data: TagFormInterface
+  const onAddEditDialogFormSubmit: SubmitHandler<AddEditFormInterface> = async (
+    data: AddEditFormInterface
   ) => {
     if (props.selectedID === -1) {
       props.callback("add", data);
@@ -54,7 +55,7 @@ function addEditDialogForm(props: AddEditTagsDialogInterface) {
   return (
     <CustomDialog
       open={props.openAddEditDialog}
-      title={props.selectedID === -1 ? "Add Tag" : "Edit Tag"}
+      title={props.title}
       onClose={() => {
         if (!props.showLoading) {
           props.callback("close");
@@ -71,7 +72,7 @@ function addEditDialogForm(props: AddEditTagsDialogInterface) {
             id="name"
             name="name"
             required={true}
-            labelText="Tag Name"
+            labelText="Name"
             disabled={props.showLoading}
           ></InputField>
 
@@ -87,4 +88,4 @@ function addEditDialogForm(props: AddEditTagsDialogInterface) {
   );
 }
 
-export default addEditDialogForm;
+export default AddEditDialogForm;

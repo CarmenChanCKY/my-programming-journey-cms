@@ -15,9 +15,9 @@ import SearchFilterLayout, {
 } from "@/components/ui/form/SearchFilterLayout";
 import { DropdownItemListInterface } from "@/components/ui/form/DropdownField";
 import AddEditDialogForm, {
-  TagFormInterface,
-} from "@/components/tags/AddEditTagsDialog";
-import DeleteDialog from "@/components/ui/DeleteDialog";
+  AddEditFormInterface,
+} from "@/components/ui/dialog/AddEditDialog";
+import DeleteDialog from "@/components/ui/dialog/DeleteDialog";
 
 // for form
 const header: Array<TableHeaderType> = [
@@ -56,7 +56,8 @@ function Tags() {
   const [selectedID, setSelectedID] = useState(-1);
   const [updateValue, setUpdateValue] = useState({
     name: "",
-  } as TagFormInterface);
+  } as AddEditFormInterface);
+  const addEditDialogTitle = selectedID === -1 ? "Add Tag" : "Edit Tag";
 
   // for delete dialog
   const [openDeleteDialog, setDeleteDialog] = useState(false);
@@ -77,6 +78,7 @@ function Tags() {
 
         if (!openAddEditDialog) {
           setSelectedID(-1);
+          setUpdateValue({ name: "" });
           setAddEditDialog(true);
         }
       }}
@@ -85,7 +87,7 @@ function Tags() {
 
   function onAddEditDialogConfirm(
     type: "add" | "edit" | "close",
-    formValue?: TagFormInterface
+    formValue?: AddEditFormInterface
   ) {
     if (type === "close") {
       // close the dialog directly
@@ -237,14 +239,12 @@ function Tags() {
         log(result);
 
         setAddEditDialog(false);
+        setLoading(false);
 
         toastDispatch({
           actionType: "insert",
           text: "Add Tag Success",
           type: "success",
-          onToastDismiss: () => {
-            setLoading(false);
-          },
         });
       } catch (error: any) {
         log("--- Add Tag Fail ---");
@@ -413,6 +413,7 @@ function Tags() {
       {/* for add / edit tag dialog */}
       <AddEditDialogForm
         openAddEditDialog={openAddEditDialog}
+        title={addEditDialogTitle}
         selectedID={selectedID}
         showLoading={showLoading || tableLoading}
         editValue={updateValue}

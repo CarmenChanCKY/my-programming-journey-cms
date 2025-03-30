@@ -1,5 +1,5 @@
 import CustomButton from "@/components/ui/button/CustomButton";
-import CustomDialog from "@/components/ui/CustomDialog";
+import CustomDialog from "@/components/ui/dialog/CustomDialog";
 
 interface DeleteDialogInterface {
   openDeleteDialog: boolean;

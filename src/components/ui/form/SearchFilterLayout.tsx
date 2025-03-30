@@ -66,7 +66,6 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
         <div className="flex flex-wrap gap-4">
           {props.showSearchBar && (
             <InputField
-              className="flex-1"
               id="search-input-field"
               name="searchField"
               placeholder={props.searchBarPlaceholder}
@@ -76,7 +75,6 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
 
           {props.showFilter && (
             <DropdownField
-              className="flex-1"
               dropdownFieldID="search-filter-field"
               dropdownListID="search-filter-list"
               name="filterField"
