@@ -173,6 +173,7 @@ const colorList: Array<string> = [
   "success",
   "error",
   "gray",
+  "stone",
 ];
 
 const getNormalButtonColorTheme = (
@@ -211,9 +212,12 @@ const getNormalButtonColorTheme = (
         case "gray":
           theme = `${theme} text-gray-400 enabled:hover:bg-gray-400 enabled:active:bg-success-500`;
           break;
+        case "stone":
+          theme = `${theme} text-stone-800 enabled:hover:bg-stone-800 enabled:active:bg-stone-700`;
+          break;
         default:
           // default: primary
-          theme = `${theme} text-primary-500 enabled:hover:bg-primary-600 enabled:active:bg-primary-600`;
+          theme = `${theme} text-primary-500 enabled:hover:bg-primary-500 enabled:active:bg-primary-600`;
           break;
       }
     } else {
@@ -233,6 +237,9 @@ const getNormalButtonColorTheme = (
           break;
         case "gray":
           theme = `${theme} bg-gray-400 text-white enabled:hover:bg-gray-500 enabled:active:bg-gray-600`;
+          break;
+        case "stone":
+          theme = `${theme} bg-stone-700 text-white enabled:hover:bg-stone-800 enabled:active:bg-stone-900`;
           break;
         default:
           // default: primary
@@ -272,6 +279,9 @@ const getOutlineButtonColorTheme = (): { [key: string]: string } => {
         break;
       case "gray":
         theme = `${theme} border-gray-400 text-gray-400 enabled:hover:bg-gray-400`;
+        break;
+      case "stone":
+        theme = `${theme} border-stone-700 text-stone-700 enabled:hover:bg-stone-700`;
         break;
       default:
         // default: primary

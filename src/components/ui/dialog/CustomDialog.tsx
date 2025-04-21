@@ -1,11 +1,11 @@
 import { customDialogTheme } from "@/helper/flowbiteTheme";
-import { Modal } from "flowbite-react";
+import { CustomFlowbiteTheme, Modal } from "flowbite-react";
 
 interface DialogInterface {
   open: boolean;
   title?: string;
   children: JSX.Element;
-
+  modalTheme?: CustomFlowbiteTheme["modal"];
   onClose: () => void;
 }
 
@@ -14,7 +14,7 @@ function CustomDialog(props: DialogInterface) {
     <Modal
       show={props.open}
       onClose={props.onClose}
-      theme={customDialogTheme}
+      theme={props.modalTheme ?? customDialogTheme}
       position="center"
     >
       <Modal.Header className="items-center">{props.title}</Modal.Header>

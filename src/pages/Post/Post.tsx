@@ -1,6 +1,11 @@
+import TiptapEditor from "@/components/tiptap-editor/TiptapEditor";
+
 function Post() {
-  console.log("post");
-  return <div>post</div>;
+  return (
+    <div>
+      <TiptapEditor></TiptapEditor>
+    </div>
+  );
 }
 
 export default Post;

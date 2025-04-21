@@ -214,4 +214,17 @@
       animation-timing-function: ease-in-out;
     }
   }
+
+  /* editor toolbar */
+  .editor-toolbar {
+    @apply flex items-center flex-wrap;
+
+    & > .toolbar-group {
+      @apply flex items-center;
+
+      &:not(:last-child) {
+        @apply border-r-[1px] border-gray-300;
+      }
+    }
+  }
 }

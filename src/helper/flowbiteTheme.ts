@@ -101,3 +101,8 @@ export const customTableTheme: CustomFlowbiteTheme["table"] = {
     hovered: "hover:bg-gray-50",
   },
 };
+
+// tooltip theme
+export const customTooltipTheme: CustomFlowbiteTheme["tooltip"] = {
+  content: "relative z-20 text-xs",
+};

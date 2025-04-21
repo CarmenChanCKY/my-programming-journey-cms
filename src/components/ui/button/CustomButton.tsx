@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import { Button } from "flowbite-react";
 import { getCustomButtonTheme } from "@/helper/flowbiteTheme";
+import { forwardRef } from "react";
 
 // https://flowbite-react.com/docs/components/button
 
@@ -16,12 +17,14 @@ interface CustomButtonType {
   disabled?: boolean;
   loading?: boolean;
   customAttribute?: any;
+  appendIcon?: JSX.Element;
   onClick?: (e: any) => void;
 }
 
-function CustomButton(props: CustomButtonType) {
+const CustomButton = forwardRef((props: CustomButtonType, ref: any) => {
   return (
     <Button
+      ref={ref}
       type={
         props.disabled || props.loading ? undefined : props.type ?? "button"
       }
@@ -42,9 +45,12 @@ function CustomButton(props: CustomButtonType) {
         }
       }}
     >
-      {props.text}
+      <div className="flex items-center">
+        {props.text}
+        {props.appendIcon}
+      </div>
     </Button>
   );
-}
+});
 
 export default CustomButton;
