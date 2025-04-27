@@ -1,11 +1,62 @@
-.tiptap {
-  & h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: revert !important;
-    font-weight: revert !important;
+.tiptap-editor-container {
+  @apply border-[1px] border-slate-300;
+
+  .editor-toolbar {
+    @apply flex items-center flex-wrap px-2 py-1 border-b-[1px] border-slate-300 gap-y-2;
+
+    & > .toolbar-group {
+      @apply flex items-center gap-x-1 px-1;
+
+      &:not(:last-child) {
+        @apply border-r-[1px] border-gray-300;
+      }
+    }
+  }
+
+  .tiptap {
+    @apply p-2;
+    line-height: 2;
+    letter-spacing: 0.1px;
+
+    & h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: revert !important;
+      font-weight: revert !important;
+    }
+
+    & ol,
+    ul {
+      list-style: revert !important;
+      margin: revert !important;
+      padding: revert !important;
+    }
+
+    & blockquote {
+      margin: revert;
+      @apply border-l-[6px] border-secondary-500 pl-2;
+    }
+
+    & hr {
+      border-color: #d7d7d7;
+    }
+
+    & .inline-code {
+      background-color: #eaeaea;
+      color: #bf2525;
+      border-radius: 3px;
+      font-family: "Source Code Pro", monospace !important;
+    }
+
+    & .post-hyperlink {
+      color: #007095;
+      text-decoration: none;
+      &:hover {
+        @apply border-b-2 border-[#007095] cursor-pointer;
+      }
+    }
   }
 }

@@ -15,12 +15,19 @@ import {
   MdFormatAlignRight,
   MdOutlineFormatColorText,
   MdFormatColorFill,
+  MdFormatQuote,
+  MdKeyboardReturn,
+  MdFormatClear,
+  MdHorizontalRule,
+  MdCode,
+  MdAddLink,
 } from "react-icons/md";
 import IconButton from "@/components/ui/button/IconButton";
 import { customTooltipTheme } from "@/helper/flowbiteTheme";
 import CustomDropdownButton from "@/components/ui/button/CustomDropdownButton";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import EditorColorPicker from "@/components/tiptap-editor/EditorColorPicker";
+import { FaYoutube } from "react-icons/fa";
 
 function EditorToolbar() {
   const { editor } = useCurrentEditor();
@@ -29,6 +36,38 @@ function EditorToolbar() {
   const [openColorPicker, setOpenColorPicker] = useState(false);
   const [colorPickerType, setColorPickerType] = useState("");
   const [colorPickerColor, setColorPickerColor] = useState("#000000");
+
+  const setEditorLink = useCallback(() => {
+    const previousUrl = editor?.getAttributes("link").href;
+    const url = window.prompt("URL", previousUrl);
+
+    // cancelled
+    if (url === null) {
+      return;
+    } else if (url === "") {
+      editor?.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+
+    try {
+      editor
+        ?.chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
+    } catch (e: any) {
+      alert(e.message);
+    }
+  }, [editor]);
+
+  const setEditorYoutubeLink = useCallback(() => {
+    const url = window.prompt("Enter YouTube URL");
+
+    if (url) {
+      editor?.commands.setYoutubeVideo({ src: url });
+    }
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -216,8 +255,6 @@ function EditorToolbar() {
       },
     ],
 
-    // https://tiptap.dev/docs/editor/extensions/functionality/color
-    // https://uiwjs.github.io/react-color/#/sketch
     /* text color, highlight text */
     [
       {
@@ -252,8 +289,21 @@ function EditorToolbar() {
       },
     ],
 
+    /* inline code, code block */
+    /* TODO: code block */
+    [
+      {
+        type: "button",
+        name: "inlineCode",
+        active: editor.isActive("code"),
+        icon: <MdCode />,
+        tooltipText: "Inline Code",
+        disabled: !editor.can().chain().focus().toggleCode().run(),
+        onClick: () => editor.chain().focus().toggleCode().run(),
+      },
+    ],
+
     /* bullet list, ordered list */
-    // TODO: style
     [
       {
         type: "button",
@@ -272,6 +322,76 @@ function EditorToolbar() {
         tooltipText: "Ordered List",
         disabled: false,
         onClick: () => editor.chain().focus().toggleOrderedList().run(),
+      },
+    ],
+
+    /* link, image, youtube */
+    /* TODO: image */
+    [
+      {
+        type: "button",
+        name: "link",
+        active: editor.isActive("link"),
+        icon: <MdAddLink />,
+        tooltipText: "Link",
+        disabled: !editor,
+        onClick: () => setEditorLink(),
+      },
+      {
+        type: "button",
+        name: "youtubeEmbed",
+        active: editor.isActive("youtube"),
+        icon: <FaYoutube />,
+        tooltipText: "Youtube",
+        disabled: !editor,
+        onClick: () => setEditorYoutubeLink(),
+      },
+    ],
+
+    /* blockquote, callout, horizontal rule */
+    /* TODO: callout */
+    [
+      {
+        type: "button",
+        name: "blockquote",
+        active: editor.isActive("blockquote"),
+        icon: <MdFormatQuote />,
+        tooltipText: "Blockquote",
+        disabled: !editor.can().toggleBlockquote(),
+        onClick: () => editor.commands.toggleBlockquote(),
+      },
+
+      {
+        type: "button",
+        name: "horizontalRule",
+        active: false,
+        icon: <MdHorizontalRule />,
+        tooltipText: "Horizontal Rule",
+        disabled: !editor.can().chain().focus().setHorizontalRule().run(),
+        onClick: () => editor.chain().focus().setHorizontalRule().run(),
+      },
+    ],
+
+    /* HardBreak, clear style */
+    [
+      {
+        type: "button",
+        name: "hardBreak",
+        active: false,
+        icon: <MdKeyboardReturn />,
+        tooltipText: "HardBreak",
+        disabled: !editor.can().chain().focus().setHardBreak().run(),
+        onClick: () => editor.chain().focus().setHardBreak().run(),
+      },
+
+      {
+        type: "button",
+        name: "clearStyle",
+        active: false,
+        icon: <MdFormatClear />,
+        tooltipText: "ClearStyle",
+        onClick: () =>
+          editor.chain().focus().clearNodes().unsetAllMarks().run(),
       },
     ],
   ];
