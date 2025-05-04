@@ -58,5 +58,12 @@
         @apply border-b-2 border-[#007095] cursor-pointer;
       }
     }
+
+    pre > code {
+      display: inline-block;
+      padding-left: 0 !important;
+      padding-right: 10px !important;
+      font-size: 0.889rem !important;
+    }
   }
 }

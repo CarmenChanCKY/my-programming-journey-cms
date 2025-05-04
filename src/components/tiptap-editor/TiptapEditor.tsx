@@ -10,11 +10,14 @@ import Highlight from "@tiptap/extension-highlight";
 import Code from "@tiptap/extension-code";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
+import CodeBlockPrism from "./prism-plugin";
+import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import "@/styles/tiptap-editor.scss";
+import "@/styles/prism.css";
 
 // define your extension array
 const extensions = [
-  StarterKit,
+  StarterKit.configure({ codeBlock: false }),
   Underline,
   TextAlign.configure({
     types: ["heading", "paragraph", "bulletList", "orderedList", "blockquote"],
@@ -26,6 +29,12 @@ const extensions = [
     HTMLAttributes: {
       class: "inline-code",
     },
+  }),
+  CodeBlockPrism.configure({
+    defaultLanguage: "html",
+    languageList: prismLanguageList.map((obj) => {
+      return obj.value;
+    }),
   }),
   Youtube,
   Link.configure({

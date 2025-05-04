@@ -27,6 +27,7 @@ import { customTooltipTheme } from "@/helper/flowbiteTheme";
 import CustomDropdownButton from "@/components/ui/button/CustomDropdownButton";
 import { useCallback, useState } from "react";
 import EditorColorPicker from "@/components/tiptap-editor/EditorColorPicker";
+import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import { FaYoutube } from "react-icons/fa";
 
 function EditorToolbar() {
@@ -290,7 +291,6 @@ function EditorToolbar() {
     ],
 
     /* inline code, code block */
-    /* TODO: code block */
     [
       {
         type: "button",
@@ -300,6 +300,27 @@ function EditorToolbar() {
         tooltipText: "Inline Code",
         disabled: !editor.can().chain().focus().toggleCode().run(),
         onClick: () => editor.chain().focus().toggleCode().run(),
+      },
+
+      {
+        type: "dropdown",
+        name: "codeBlock",
+        active: editor.isActive("codeBlock"),
+        text: () => {
+          return "CODE";
+        },
+        itemList: prismLanguageList.map((obj) => {
+          return {
+            text: obj.text,
+            onClick: () => {
+              editor
+                .chain()
+                .focus()
+                .toggleCodeBlock({ language: obj.value })
+                .run();
+            },
+          };
+        }),
       },
     ],
 

@@ -1,0 +1,35 @@
+import Prism from "prismjs";
+
+import "prismjs/components/prism-apacheconf";
+import "prismjs/components/prism-bash";
+import "prismjs/components/prism-c";
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-cpp";
+import "prismjs/components/prism-csv";
+import "prismjs/components/prism-dart";
+import "prismjs/components/prism-docker";
+import "prismjs/components/prism-excel-formula";
+import "prismjs/components/prism-firestore-security-rules";
+import "prismjs/components/prism-git";
+import "prismjs/components/prism-go";
+import "prismjs/components/prism-graphql";
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-kotlin";
+import "prismjs/components/prism-markdown";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-markup-templating";
+import "prismjs/components/prism-mongodb";
+import "prismjs/components/prism-n1ql";
+import "prismjs/components/prism-nginx";
+import "prismjs/components/prism-php";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-regex";
+import "prismjs/components/prism-scss";
+import "prismjs/components/prism-sql";
+import "prismjs/components/prism-swift";
+import "prismjs/components/prism-typescript";
+
+export default Prism;
