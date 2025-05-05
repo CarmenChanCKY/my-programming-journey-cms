@@ -58,19 +58,15 @@ function getDecorations({
     const language = block.node.attrs.language || defaultLanguage;
     const langList = block.node.attrs.languageList || languageList;
     let html: string = "";
-console.log(language)
-console.log(langList)
-console.log(Object.keys(Prism.languages))
+
     try {
       if (registeredLang(language) && langList.includes(language)) {
-        console.log("1")
         html = Prism.highlight(
           block.node.textContent,
           Prism.languages[language],
           language
         );
       } else {
-        console.log("2")
         html = Prism.highlight(
           block.node.textContent,
           Prism.languages.plain,
@@ -78,14 +74,12 @@ console.log(Object.keys(Prism.languages))
         );
       }
     } catch (err: any) {
-      console.log("3")
       html = Prism.highlight(
         block.node.textContent,
         Prism.languages.plain,
         "plain"
       );
     }
-console.log(html)
     const nodes = getHighlightNodes(html);
 
     parseNodes(nodes).forEach((node) => {
@@ -119,7 +113,7 @@ export function PrismPlugin({
     throw Error("You must specify the defaultLanguage parameter");
   }
 
-  if(languageList.length<=0){
+  if (languageList.length <= 0) {
     throw Error("You must provide at least one language");
   }
 

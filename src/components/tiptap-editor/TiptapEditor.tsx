@@ -12,6 +12,7 @@ import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import CodeBlockPrism from "./prism-plugin";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
+import Callout from "./callout-plugin";
 import "@/styles/tiptap-editor.scss";
 import "@/styles/prism.css";
 
@@ -69,6 +70,7 @@ const extensions = [
       }
     },
   }),
+  Callout,
 ];
 
 const content = "<p>Hello World!</p>";

@@ -29,6 +29,7 @@ import { useCallback, useState } from "react";
 import EditorColorPicker from "@/components/tiptap-editor/EditorColorPicker";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import { FaYoutube } from "react-icons/fa";
+import calloutItemList from "./callout-plugin/callout-color-list";
 
 function EditorToolbar() {
   const { editor } = useCurrentEditor();
@@ -301,7 +302,6 @@ function EditorToolbar() {
         disabled: !editor.can().chain().focus().toggleCode().run(),
         onClick: () => editor.chain().focus().toggleCode().run(),
       },
-
       {
         type: "dropdown",
         name: "codeBlock",
@@ -370,7 +370,6 @@ function EditorToolbar() {
     ],
 
     /* blockquote, callout, horizontal rule */
-    /* TODO: callout */
     [
       {
         type: "button",
@@ -381,7 +380,22 @@ function EditorToolbar() {
         disabled: !editor.can().toggleBlockquote(),
         onClick: () => editor.commands.toggleBlockquote(),
       },
-
+      {
+        type: "dropdown",
+        name: "callout",
+        active: editor.isActive("callout"),
+        text: () => {
+          return "CALLOUT";
+        },
+        itemList: calloutItemList.map((color) => {
+          return {
+            text: color,
+            onClick: () => {
+              editor.chain().focus().toggleCallout({ color }).run();
+            },
+          };
+        }),
+      },
       {
         type: "button",
         name: "horizontalRule",
