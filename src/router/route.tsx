@@ -26,6 +26,26 @@ const routePathBeforeLogin = routeBeforeLogin.map((obj: any) => {
 
 const routeAfterLogin = [
   {
+    path: generateRoutePath("/post/detail/:id"),
+    name: "PostDetail",
+    lazy: async () => {
+      const PostDetail = (await import("../pages/Post/PostDetail.tsx")).default;
+      return {
+        element: <PostDetail />,
+      };
+    },
+  },
+  // {
+  //   path: generateRoutePath("/post/new"),
+  //   name: "NewPost",
+  //   lazy: async () => {
+  //     const PostDetail = (await import("../pages/Post/PostDetail.tsx")).default;
+  //     return {
+  //       element: <PostDetail />,
+  //     };
+  //   },
+  // },
+  {
     path: generateRoutePath("/post"),
     name: "Post",
     lazy: async () => {
