@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 import Blank from "@/layouts/Blank/Blank";
 import Content from "@/layouts/Content/Content";
 
@@ -10,11 +10,16 @@ const generateRoutePath = (path: string, loginPath: boolean = true) => {
 
 const routeBeforeLogin = [
   {
+    index: true,
+    redirect: generateRoutePath("/login", false),
+  },
+  {
+    pathRegex: `^/login$`,
     path: generateRoutePath("/login", false),
     lazy: async () => {
       const Login = (await import("../pages/Login/Login.tsx")).default;
       return {
-        element: <Login />,
+        Component: Login,
       };
     },
   },
@@ -26,76 +31,105 @@ const routePathBeforeLogin = routeBeforeLogin.map((obj: any) => {
 
 const routeAfterLogin = [
   {
-    path: generateRoutePath("/post/detail/:id"),
-    name: "PostDetail",
-    lazy: async () => {
-      const PostDetail = (await import("../pages/Post/PostDetail.tsx")).default;
-      return {
-        element: <PostDetail />,
-      };
-    },
+    index: true,
+    redirect: "post",
   },
-  // {
-  //   path: generateRoutePath("/post/new"),
-  //   name: "NewPost",
-  //   lazy: async () => {
-  //     const PostDetail = (await import("../pages/Post/PostDetail.tsx")).default;
-  //     return {
-  //       element: <PostDetail />,
-  //     };
-  //   },
-  // },
+
   {
-    path: generateRoutePath("/post"),
+    path: "post",
     name: "Post",
-    lazy: async () => {
-      const Post = (await import("../pages/Post/Post.tsx")).default;
-      return {
-        element: <Post />,
-      };
-    },
+    pathRegex: `^${loginPathPrefix}/post$`,
+    children: [
+      {
+        index: true,
+        lazy: async () => {
+          const Post = (await import("../pages/Post/Post.tsx")).default;
+          return {
+            Component: Post,
+          };
+        },
+      },
+      {
+        path: "detail/:id",
+        pathRegex: `^(${loginPathPrefix}\/post\/detail\/)[\\w\\d]+$`,
+        lazy: async () => {
+          const PostDetail = (await import("../pages/Post/PostDetail.tsx"))
+            .default;
+          return {
+            Component: PostDetail,
+          };
+        },
+      },
+    ],
   },
   {
-    path: generateRoutePath("/categories"),
+    path: "categories",
     name: "Categories",
+    pathRegex: `^${loginPathPrefix}/categories$`,
     lazy: async () => {
       const Categories = (await import("../pages/Categories/Categories.tsx"))
         .default;
       return {
-        element: <Categories />,
+        Component: Categories,
       };
     },
   },
   {
-    path: generateRoutePath("/tags"),
+    path: "tags",
     name: "Tags",
+    pathRegex: `^${loginPathPrefix}/tags$`,
     lazy: async () => {
       const Tags = (await import("../pages/Tags/Tags.tsx")).default;
       return {
-        element: <Tags />,
+        Component: Tags,
       };
     },
   },
 ];
 
-const routePathAfterLogin = routeAfterLogin.map((obj: any) => {
-  return obj.path;
-});
+const routePathAfterLogin = (): Array<{ regex: string; path: string }> => {
+  const result: Array<{ regex: string; path: string }> = [];
 
-const navBarContent = routeAfterLogin.map((obj: any) => {
-  return { path: obj.path, name: obj.name };
-});
+  routeAfterLogin.forEach((obj: any) => {
+    if (obj.pathRegex !== undefined && obj.pathRegex !== null) {
+      result.push({
+        regex: obj.pathRegex,
+        path: `${loginPathPrefix}/${obj.path}`,
+      });
+    }
+
+    if (obj.children) {
+      obj.children.forEach((child: any) => {
+        if (child.path !== undefined && child.pathRegex !== null) {
+          result.push({
+            regex: child.pathRegex,
+            path: `${loginPathPrefix}/${obj.path}/${child.path}`,
+          });
+        }
+      });
+    }
+  });
+
+  return result;
+};
+
+const navBarContent = routeAfterLogin
+  .filter((obj: any) => {
+    return ["Post", "Categories", "Tags"].includes(obj.name);
+  })
+  .map((obj: any) => {
+    return { path: obj.path, name: obj.name };
+  });
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Blank />,
-    children: routeBeforeLogin,
+    path: loginPathPrefix,
+    Component: Content,
+    children: routeAfterLogin,
   },
   {
-    path: loginPathPrefix,
-    element: <Content />,
-    children: routeAfterLogin,
+    Component: Blank,
+    children: routeBeforeLogin,
   },
 ]);
 

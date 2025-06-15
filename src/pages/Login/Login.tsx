@@ -7,7 +7,7 @@ import GridColumn from "@/components/ui/grid_system/GridColumn";
 import Card from "@/components/ui/card/Card";
 import InputField from "@/components/ui/form/InputField";
 import CustomButton from "@/components/ui/button/CustomButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { GlobalContext } from "@/context/GlobalContext";
 import { log } from "@/helper/common";
 import { generateRoutePath } from "@/router/route";

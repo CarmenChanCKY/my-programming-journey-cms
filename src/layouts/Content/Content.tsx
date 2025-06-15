@@ -1,7 +1,7 @@
 import CustomDrawer from "@/components/ui/CustomDrawer";
 import { routePathAfterLogin, generateRoutePath } from "@/router/route";
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import SessionWebJs from "supertokens-web-js/recipe/session";
 
 function Content() {
@@ -12,16 +12,21 @@ function Content() {
   // login guard
   useEffect(() => {
     const currentPath = location.pathname;
+    const routerPathAfterLogin = routePathAfterLogin();
 
     SessionWebJs.doesSessionExist()
       .then((isLogin: boolean) => {
         if (isLogin) {
           // user has been login
-          // redirect to the first path of routePathAfterLogin if the current path does not exist in routePathAfterLogin
-          if (!routePathAfterLogin.includes(currentPath)) {
-            navigate(routePathAfterLogin[0], { replace: true });
-          } else {
+          const index = routerPathAfterLogin.findIndex((item) => {
+            return new RegExp(item.regex).test(currentPath);
+          });
+
+          if (index !== -1) {
             setAllowRoute(true);
+          } else {
+            // redirect to the first path of routePathAfterLogin if the current path does not exist in routePathAfterLogin
+            navigate(routerPathAfterLogin[0].path, { replace: true });
           }
         } else {
           // redirect to login path

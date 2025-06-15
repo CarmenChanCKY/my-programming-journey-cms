@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Drawer, Sidebar } from "flowbite-react";
 import IconButton from "@/components/ui/button/IconButton";
 import { generateRoutePath, navBarContent } from "@/router/route";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { clsx } from "clsx";
 import { cmsSignout } from "@/helper/fetcher";
 import { hamburgerIcon } from "@/components/ui/IconElement";

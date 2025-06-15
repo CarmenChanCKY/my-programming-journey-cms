@@ -4,7 +4,7 @@ import {
   routePathAfterLogin,
 } from "@/router/route";
 import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import SessionWebJs from "supertokens-web-js/recipe/session";
 
 function Blank() {
@@ -15,13 +15,14 @@ function Blank() {
   // login guard
   useEffect(() => {
     const currentPath = location.pathname;
+    const routerPathAfterLogin = routePathAfterLogin();
 
     SessionWebJs.doesSessionExist()
       .then((isLogin: boolean) => {
         if (isLogin) {
           // user has been login
           // redirect to the first path of routePathAfterLogin
-          navigate(routePathAfterLogin[0], { replace: true });
+          navigate(routerPathAfterLogin[0].path, { replace: true });
         } else {
           // redirect to login path if the current path does not exist in routePathBeforeLogin
           if (!routePathBeforeLogin.includes(currentPath)) {
@@ -41,7 +42,7 @@ function Blank() {
         }
       });
   }, [location.pathname]);
-  
+
   return (
     <div className={`min-h-full flex flex-col justify-center items-center`}>
       {allowRoute ? <Outlet /> : null}
