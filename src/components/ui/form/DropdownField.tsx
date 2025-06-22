@@ -4,7 +4,12 @@ import { downIcon } from "@/components/ui/IconElement";
 import InputField from "@/components/ui/form/InputField";
 import { useEffect, useState } from "react";
 import { Dropdown, DropdownOptions } from "flowbite";
-import { useFormContext } from "react-hook-form";
+import {
+  Controller,
+  ControllerRenderProps,
+  FieldValues,
+  useFormContext,
+} from "react-hook-form";
 
 export interface DropdownItemListInterface {
   text: string;
@@ -24,6 +29,7 @@ interface DropdownFieldInterface {
   suffixText?: string;
   suffixIcon?: React.ReactNode;
   disabled?: boolean;
+  multiple?: boolean;
 
   // validate params
   required?: boolean;
@@ -33,8 +39,10 @@ const downIconElement = () => {
   return <div className="suffix-icon">{downIcon}</div>;
 };
 
+const activeIndexList = new Set<number>();
+
 function DropdownField(props: DropdownFieldInterface) {
-  const { setValue } = useFormContext();
+  const { control, setValue } = useFormContext();
   const [dropdownControl, setDropdownControl] = useState<Dropdown | null>(null);
 
   useEffect(() => {
@@ -48,42 +56,87 @@ function DropdownField(props: DropdownFieldInterface) {
     setDropdownControl(new Dropdown(listEl, fieldEL, options));
   }, []);
 
-  function selectItem(e: any, index: number) {
+  function selectItem(
+    e: any,
+    index: number,
+    field: ControllerRenderProps<FieldValues, string>
+  ) {
     e.stopPropagation();
-    setValue(props.name, props.itemList[index].text);
-    dropdownControl?.hide();
+
+    if (props.multiple) {
+      let currentFieldValue = field.value.split(", ");
+
+      if (activeIndexList.has(index)) {
+        currentFieldValue = currentFieldValue.filter((text: string) => {
+          return text !== props.itemList[index].text;
+        });
+
+        activeIndexList.delete(index);
+      } else {
+        currentFieldValue.push(props.itemList[index].text);
+        activeIndexList.add(index);
+      }
+
+      setValue(props.name, currentFieldValue.join(", "));
+    } else {
+      activeIndexList.clear();
+      activeIndexList.add(index);
+      setValue(props.name, props.itemList[index].text);
+      dropdownControl?.hide();
+    }
   }
 
   return (
-    <div className={clsx("dropdown-field", props.className)}>
-      <InputField
-        id={props.dropdownFieldID}
-        name={props.name}
-        labelText={props.labelText}
-        placeholder={props.placeholder}
-        prefixText={props.prefixText}
-        prefixIcon={props.prefixIcon}
-        suffixText={props.suffixText}
-        suffixIcon={props.suffixIcon ?? downIconElement()}
-        disabled={props.disabled}
-        readonly={true}
-        required={props.required}
-        className="cursor-pointer"
-        inputClassName="cursor-pointer"
-      ></InputField>
+    <Controller
+      control={control}
+      name={props.name}
+      render={({ field }) => {
+        return (
+          <div className={clsx("dropdown-field", props.className)}>
+            <InputField
+              id={props.dropdownFieldID}
+              name={props.name}
+              labelText={props.labelText}
+              placeholder={props.placeholder}
+              prefixText={props.prefixText}
+              prefixIcon={props.prefixIcon}
+              suffixText={props.suffixText}
+              suffixIcon={props.suffixIcon ?? downIconElement()}
+              disabled={props.disabled}
+              readonly={true}
+              required={props.required}
+              className="cursor-pointer"
+              inputClassName="cursor-pointer"
+            ></InputField>
 
-      <div id={props.dropdownListID} className="custom-dropdown-list hidden">
-        <ul>
-          {props.itemList.map((item, index) => {
-            return (
-              <li key={index} onClick={(e: any) => selectItem(e, index)}>
-                {item.text}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
+            <div
+              id={props.dropdownListID}
+              className="custom-dropdown-list hidden"
+            >
+              <ul>
+                {props.itemList.map((item, index) => {
+                  return (
+                    <li
+                      className={
+                        activeIndexList.has(index) ||
+                        (activeIndexList.size <= 0 &&
+                          field.value === props.itemList[index].text)
+                          ? "active"
+                          : ""
+                      }
+                      key={index}
+                      onClick={(e: any) => selectItem(e, index, field)}
+                    >
+                      {item.text}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        );
+      }}
+    ></Controller>
   );
 }
 

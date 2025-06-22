@@ -52,7 +52,9 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
       );
     }
 
-    props.onSubmit(data);
+    console.log(data)
+
+ //   props.onSubmit(data);
   };
 
   return (
@@ -66,6 +68,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
         <div className="flex flex-wrap gap-4">
           {props.showSearchBar && (
             <InputField
+              className="flex-auto"
               id="search-input-field"
               name="searchField"
               placeholder={props.searchBarPlaceholder}
@@ -75,6 +78,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
 
           {props.showFilter && (
             <DropdownField
+              className="flex-auto"
               dropdownFieldID="search-filter-field"
               dropdownListID="search-filter-list"
               name="filterField"

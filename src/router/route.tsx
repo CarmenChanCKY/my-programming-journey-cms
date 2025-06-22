@@ -50,6 +50,17 @@ const routeAfterLogin = [
         },
       },
       {
+        path: "add",
+        pathRegex: `^${loginPathPrefix}/post/add$`,
+        lazy: async () => {
+          const PostDetail = (await import("../pages/Post/PostDetail.tsx"))
+            .default;
+          return {
+            Component: PostDetail,
+          };
+        },
+      },
+      {
         path: "detail/:id",
         pathRegex: `^(${loginPathPrefix}\/post\/detail\/)[\\w\\d]+$`,
         lazy: async () => {

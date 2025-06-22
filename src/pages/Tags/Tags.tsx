@@ -43,20 +43,19 @@ function Tags() {
     setTableLoading,
     toastDispatch,
   } = useContext(GlobalContext);
-  const [data, setData] = useState([] as Array<TableDataType>);
+  const [data, setData] = useState<Array<TableDataType>>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const [saveSearchFilterFormValue, updateSearchFilterFormValue] = useState(
-    null as null | SearchFilterFormInterface
-  );
-  const abortControllerRef = useRef(null as null | AbortController);
+  const [saveSearchFilterFormValue, updateSearchFilterFormValue] =
+    useState<SearchFilterFormInterface | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // for AddEditDialogForm
   const [openAddEditDialog, setAddEditDialog] = useState(false);
   const [selectedID, setSelectedID] = useState(-1);
-  const [updateValue, setUpdateValue] = useState({
+  const [updateValue, setUpdateValue] = useState<AddEditFormInterface>({
     name: "",
-  } as AddEditFormInterface);
+  });
   const addEditDialogTitle = selectedID === -1 ? "Add Tag" : "Edit Tag";
 
   // for delete dialog

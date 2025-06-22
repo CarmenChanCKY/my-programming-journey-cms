@@ -32,7 +32,7 @@ interface TableType {
 
 function PaginationTable(props: TableType) {
   const [totalPages, setTotalPages] = useState(1);
-  const [formatData, setFormatData] = useState([] as Array<Array<JSX.Element>>);
+  const [formatData, setFormatData] = useState<Array<Array<JSX.Element>>>([]);
   const { showLoading, tableLoading } = useContext(GlobalContext);
 
   // format table data
