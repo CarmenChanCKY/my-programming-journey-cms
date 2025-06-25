@@ -64,8 +64,11 @@ function DropdownField(props: DropdownFieldInterface) {
     e.stopPropagation();
 
     if (props.multiple) {
-      let currentFieldValue = field.value.split(", ");
-
+      let currentFieldValue = field.value
+        .split(", ")
+        .filter((value: string) => {
+          return value !== undefined && value !== null && value !== "";
+        });
       if (activeIndexList.has(index)) {
         currentFieldValue = currentFieldValue.filter((text: string) => {
           return text !== props.itemList[index].text;

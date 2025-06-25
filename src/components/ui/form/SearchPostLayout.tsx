@@ -29,10 +29,6 @@ export interface PostSearchResultInterface {
 function SearchPostLayout(props: SearchPostLayoutInterface) {
   const { showLoading, tableLoading } = useContext(GlobalContext);
 
-  // TODO: need to test
-  // https://codesandbox.io/p/sandbox/festive-cannon-dw0unh?file=%2Fsrc%2FApp.tsx%3A44%2C17-44%2C25
-  // https://codesandbox.io/p/sandbox/react-hook-form-material-ui-select-multiple-vcgry?file=%2Fsrc%2FApp.js
-
   const searchForm = useForm<PostSearchFormInterface>({
     mode: "onSubmit",
     defaultValues: {
@@ -52,7 +48,42 @@ function SearchPostLayout(props: SearchPostLayoutInterface) {
     },
   });
 
-  const onFormSubmit = (data: PostSearchFormInterface) => {};
+  const onFormSubmit = (data: PostSearchFormInterface) => {
+    console.log(data);
+    const result: PostSearchResultInterface = {
+      categoryID: -1,
+      tagsIDList: [],
+      postTitle: data.postTitle,
+    };
+
+    if (
+      props.categoryItemList !== undefined &&
+      props.categoryItemList !== null &&
+      props.categoryItemList.length > 0 &&
+      data.categoryID !== ""
+    ) {
+      result.categoryID = parseInt(
+        searchDropdownValueByText(data.categoryID, props.categoryItemList)
+      );
+    }
+
+    if (
+      props.tagsItemList !== undefined &&
+      props.tagsItemList !== null &&
+      props.tagsItemList.length > 0 &&
+      data.tagsIDList !== ""
+    ) {
+      const splitTags = data.tagsIDList.split(", ");
+
+      for (let i = 0; i < splitTags.length; i++) {
+        result.tagsIDList.push(
+          parseInt(searchDropdownValueByText(splitTags[i], props.tagsItemList))
+        );
+      }
+    }
+
+    props.onSubmit(result);
+  };
 
   return (
     <FormProvider {...searchForm}>

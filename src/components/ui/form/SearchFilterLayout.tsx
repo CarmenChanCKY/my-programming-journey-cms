@@ -52,9 +52,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
       );
     }
 
-    console.log(data)
-
- //   props.onSubmit(data);
+    props.onSubmit(data);
   };
 
   return (

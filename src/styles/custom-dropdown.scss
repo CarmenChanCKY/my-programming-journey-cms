@@ -8,7 +8,8 @@
   }
 
   .custom-dropdown-list {
-    @apply bg-white rounded-[6px] shadow-sm z-[99] w-full border-[1px] border-gray-200;
+    @apply bg-white rounded-[6px] shadow-sm z-[99] w-full border-[1px] border-gray-200 overflow-y-auto;
+    max-height: 350px;
 
     & ul {
       @apply text-sm text-gray-700;
