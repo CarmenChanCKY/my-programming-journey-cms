@@ -127,7 +127,7 @@ function Tags() {
     }
   }
 
-  function onRemoveButtonClick(id: number, index: number) {
+  function onRemoveButtonClick(index: number) {
     if (!openDeleteDialog) {
       setDeleteIndex(index);
       setDeleteDialog(true);
@@ -163,18 +163,15 @@ function Tags() {
 
       if (
         searchFilterFormValue !== undefined &&
-        searchFilterFormValue !== null &&
-        searchFilterFormValue.searchField !== ""
+        searchFilterFormValue !== null
       ) {
-        payload.filterName = searchFilterFormValue.searchField;
-      }
+        if (searchFilterFormValue.searchField !== "") {
+          payload.filterName = searchFilterFormValue.searchField;
+        }
 
-      if (
-        searchFilterFormValue !== undefined &&
-        searchFilterFormValue !== null &&
-        searchFilterFormValue.filterField !== ""
-      ) {
-        payload.filterUsedCount = searchFilterFormValue.filterField;
+        if (searchFilterFormValue.filterField !== "") {
+          payload.filterUsedCount = searchFilterFormValue.filterField;
+        }
       }
 
       const result: any = await serverApi(
@@ -203,7 +200,7 @@ function Tags() {
                   onEditButtonClick(result.data[index].id, index);
                 },
                 deleteCallback: () => {
-                  onRemoveButtonClick(result.data[index].id, index);
+                  onRemoveButtonClick(index);
                 },
               }),
             };

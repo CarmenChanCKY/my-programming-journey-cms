@@ -10,10 +10,12 @@ import {
   rightIcon,
 } from "@/components/ui/IconElement";
 import { customProgressTheme, customTableTheme } from "@/helper/flowbiteTheme";
+import { clsx } from "clsx";
 
 export interface TableHeaderType {
   key: string;
   child: string | JSX.Element;
+  class?: string;
 }
 
 export interface TableDataType {
@@ -76,7 +78,10 @@ function PaginationTable(props: TableType) {
 
         tempElement.push(
           <Table.Cell
-            className="whitespace-nowrap font-medium text-gray-500"
+            className={clsx(
+              "whitespace-nowrap font-medium text-gray-500",
+              header[k].class
+            )}
             key={`data_cell_${i}_${k}`}
           >
             {element}
@@ -108,14 +113,19 @@ function PaginationTable(props: TableType) {
   ]);
 
   return (
+    <div> <div>{tableLoading}</div>
     <div className="overflow-x-auto">
       <div className="min-w-max">
+       
         <Table theme={customTableTheme} hoverable>
           <Table.Head>
             {/* table header */}
             {props.header.map((header: TableHeaderType) => {
               return (
-                <Table.HeadCell key={`header_${header.key}`}>
+                <Table.HeadCell
+                  key={`header_${header.key}`}
+                  className={header.class}
+                >
                   {typeof header.child === "string" ? (
                     <span>{header.child}</span>
                   ) : (
@@ -249,6 +259,7 @@ function PaginationTable(props: TableType) {
           </div>
         </Card>
       </div>
+    </div>
     </div>
   );
 }

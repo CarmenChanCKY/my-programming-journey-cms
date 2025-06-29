@@ -5,6 +5,7 @@ interface DeleteDialogInterface {
   openDeleteDialog: boolean;
   removeItem: string;
   showLoading: boolean;
+  title?: string;
   callback: (type: "confirm" | "close") => void;
 }
 
@@ -12,7 +13,7 @@ function DeleteDialog(props: DeleteDialogInterface) {
   return (
     <CustomDialog
       open={props.openDeleteDialog}
-      title={`Delete ${props.removeItem}`}
+      title={`Delete ${props.title ?? props.removeItem}`}
       onClose={() => {
         if (!props.showLoading) {
           props.callback("close");

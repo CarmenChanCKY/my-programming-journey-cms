@@ -48,8 +48,9 @@ function SearchPostLayout(props: SearchPostLayoutInterface) {
     },
   });
 
-  const onFormSubmit = (data: PostSearchFormInterface) => {
-    console.log(data);
+  const onFormSubmit: SubmitHandler<PostSearchFormInterface> = (
+    data: PostSearchFormInterface
+  ) => {
     const result: PostSearchResultInterface = {
       categoryID: -1,
       tagsIDList: [],

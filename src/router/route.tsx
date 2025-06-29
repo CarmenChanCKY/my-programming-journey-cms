@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import Blank from "@/layouts/Blank/Blank";
 import Content from "@/layouts/Content/Content";
+import App from "@/App.tsx";
 
 const loginPathPrefix: string = "/panel";
 
@@ -134,13 +135,19 @@ const navBarContent = routeAfterLogin
 
 const router = createBrowserRouter([
   {
-    path: loginPathPrefix,
-    Component: Content,
-    children: routeAfterLogin,
-  },
-  {
-    Component: Blank,
-    children: routeBeforeLogin,
+    path: "/",
+    Component: App,
+    children: [
+      {
+        path: loginPathPrefix,
+        Component: Content,
+        children: routeAfterLogin,
+      },
+      {
+        Component: Blank,
+        children: routeBeforeLogin,
+      },
+    ],
   },
 ]);
 

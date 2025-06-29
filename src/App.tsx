@@ -2,6 +2,7 @@ import { GlobalContext, GlobalProvider } from "@/context/GlobalContext";
 import { useContext } from "react";
 import Toast from "@/components/ui/toast/Toast";
 import { ToastReducerType } from "@/components/ui/toast/ToastReducer";
+import { Outlet } from "react-router";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function MainContent() {
 
   return (
     <main className="min-h-full h-full">
+      <Outlet />
+
       {/* loading spinner */}
       {showLoading ? (
         <div className="loading-spinner-container">

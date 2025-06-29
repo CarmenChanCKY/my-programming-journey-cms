@@ -44,6 +44,15 @@
       -moz-appearance: textfield;
     }
   }
+
+  // limit the width of table
+  // don't forget to add custom max width and min width
+  // otherwise this class is not work
+  .table-w-limit {
+    & > span {
+      @apply text-wrap;
+    }
+  }
 }
 
 @layer components {
