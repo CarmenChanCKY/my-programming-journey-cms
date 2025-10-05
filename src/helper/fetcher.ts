@@ -60,7 +60,7 @@ async function serverApi(
 
     if (Object.keys(params ?? {}).length > 0) {
       config.params = params;
-    } else if (Object.keys(formData ?? {}).length > 0) {
+    } else if (formData !== undefined && formData !== null) {
       config.data = formData;
     }
 

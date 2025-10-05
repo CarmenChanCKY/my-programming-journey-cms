@@ -12,6 +12,7 @@ interface SearchPostLayoutInterface {
   categoryItemList: Array<DropdownItemListInterface>;
   tagsItemList: Array<DropdownItemListInterface>;
   onSubmit: (returnValue: PostSearchResultInterface) => void;
+  onReset: () => void;
 }
 
 interface PostSearchFormInterface {
@@ -93,6 +94,10 @@ function SearchPostLayout(props: SearchPostLayoutInterface) {
         onSubmit={searchForm.handleSubmit((data: PostSearchFormInterface) => {
           onFormSubmit(data);
         })}
+        onReset={() => {
+          searchForm.reset();
+          props.onReset();
+        }}
         noValidate
         autoComplete="off"
       >
@@ -126,13 +131,23 @@ function SearchPostLayout(props: SearchPostLayoutInterface) {
             disabled={showLoading || tableLoading}
           ></DropdownField>
 
-          <CustomButton
-            text="Search"
-            outline={true}
-            color="success"
-            type="submit"
-            disabled={showLoading || tableLoading}
-          ></CustomButton>
+          <div className="flex flex-wrap gap-4">
+            <CustomButton
+              text="Search"
+              outline={true}
+              color="success"
+              type="submit"
+              disabled={showLoading || tableLoading}
+            ></CustomButton>
+
+            <CustomButton
+              text="Reset"
+              outline={true}
+              color="error"
+              type="reset"
+              disabled={showLoading || tableLoading}
+            ></CustomButton>
+          </div>
         </div>
       </form>
     </FormProvider>

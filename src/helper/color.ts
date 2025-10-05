@@ -272,7 +272,7 @@ const getOutlineButtonColorTheme = (): { [key: string]: string } => {
         theme = `${theme} border-accent-300 text-accent-300 enabled:hover:bg-accent-300`;
         break;
       case "error":
-        theme = `${theme} border-error-300 text-error-300 enabled:hover:bg-error-300`;
+        theme = `${theme} border-error-500 text-error-500 enabled:hover:bg-error-500`;
         break;
       case "success":
         theme = `${theme} border-success-400 text-success-400 enabled:hover:bg-success-400`;

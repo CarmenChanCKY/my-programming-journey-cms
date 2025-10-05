@@ -15,6 +15,7 @@ interface InputFieldType {
   inputClassName?: string;
   type?: string;
   labelText?: string;
+  boldLabel?: boolean;
   placeholder?: string;
   prefixText?: string;
   prefixIcon?: React.ReactNode;
@@ -81,7 +82,10 @@ function InputField(props: InputFieldType) {
     <>
       {/* label */}
       {props.labelText ? (
-        <label htmlFor={props.id} className="mb-2">
+        <label
+          className={props.boldLabel ? "font-bold" : ""}
+          htmlFor={props.id}
+        >
           {props.labelText}
         </label>
       ) : null}

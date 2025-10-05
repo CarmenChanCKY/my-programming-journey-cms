@@ -107,6 +107,15 @@ function Post() {
     getPostList(1, returnValue);
   }
 
+  function onSearchFilterReset() {
+    if (saveSearchFormValue !== null) {
+      updateAbortControllerRef("post");
+      setCurrentPage(1);
+      updateSearchFormValue(null);
+      getPostList(1, null);
+    }
+  }
+
   // for table button
   function onPageChanged(page: number) {
     setCurrentPage(page);
@@ -296,7 +305,7 @@ function Post() {
         log("--- Remove Post Fail ---");
         log(error);
 
-        let message = "Remove Post Fail";
+        const message = "Remove Post Fail";
 
         toastDispatch({
           actionType: "insert",
@@ -336,6 +345,7 @@ function Post() {
         categoryItemList={categoryList}
         tagsItemList={tagsList}
         onSubmit={onSearchFilterValueUpdated}
+        onReset={onSearchFilterReset}
       ></SearchPostLayout>
 
       <PaginationTable

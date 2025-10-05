@@ -21,17 +21,23 @@ import {
   MdHorizontalRule,
   MdCode,
   MdAddLink,
+  MdAttachFile,
 } from "react-icons/md";
 import IconButton from "@/components/ui/button/IconButton";
 import { customTooltipTheme } from "@/helper/flowbiteTheme";
 import CustomDropdownButton from "@/components/ui/button/CustomDropdownButton";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import EditorColorPicker from "@/components/tiptap-editor/EditorColorPicker";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import { FaYoutube } from "react-icons/fa";
 import calloutItemList from "./callout-plugin/callout-color-list";
+import validateFileInput from "@/helper/uploader";
+import { GlobalContext } from "@/context/GlobalContext";
+import { serverApi } from "@/helper/fetcher";
 
 function EditorToolbar() {
+  const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
+
   const { editor } = useCurrentEditor();
 
   // for color picker
@@ -75,6 +81,35 @@ function EditorToolbar() {
     return null;
   }
 
+  const selectImage = () => {
+    document.getElementById("editor-upload-image")?.click();
+  };
+
+  const onImageSelected = async (e: any) => {
+    const files: FileList = e.target.files;
+    if (files && files.length > 0) {
+      const validateResult = validateFileInput(files[0]);
+      console.log(files[0]);
+      console.log(validateResult);
+      if (typeof validateResult === "string" && validateResult !== "") {
+        toastDispatch({
+          actionType: "insert",
+          text: validateResult,
+          type: "error",
+        });
+      } else {
+        // TODO: https://developers.google.com/workspace/drive/api/guides/about-sdk
+
+        const form = new FormData();
+        form.append("file", files[0]);
+
+        const result: any = await serverApi("/upload", "post", {}, form);
+
+        console.log(result);
+      }
+    }
+  };
+
   const btnList: Array<Array<any>> = [
     /* undo, redo */
     [
@@ -114,6 +149,7 @@ function EditorToolbar() {
           let text = "Paragraph";
 
           if (editor?.isActive("paragraph")) {
+            /* empty */
           } else if (editor?.isActive("heading", { level: 1 })) {
             text = "H1";
           } else if (editor?.isActive("heading", { level: 2 })) {
@@ -348,6 +384,11 @@ function EditorToolbar() {
 
     /* link, image, youtube */
     /* TODO: image */
+    // https://tiptap.dev/docs/editor/extensions/nodes/image
+    // https://tiptap.dev/docs/editor/extensions/functionality/table-kit
+    // https://www.npmjs.com/package/@pentestpad/tiptap-extension-figure
+    // https://github.com/harshtalks/tiptap-plugins/tree/main/packages/image-tiptap
+    // https://github.com/carlosvaldesweb/tiptap-extension-upload-image
     [
       {
         type: "button",
@@ -366,6 +407,15 @@ function EditorToolbar() {
         tooltipText: "Youtube",
         disabled: !editor,
         onClick: () => setEditorYoutubeLink(),
+      },
+      {
+        type: "button",
+        name: "uploadImage",
+        active: false,
+        icon: <MdAttachFile />,
+        tooltipText: "Upload",
+        disabled: !editor,
+        onClick: selectImage,
       },
     ],
 
@@ -496,7 +546,7 @@ function EditorToolbar() {
             color={color}
             size="sm"
             disabled={child.disabled}
-            onClick={(e) => {
+            onClick={() => {
               child.onClick();
             }}
           ></IconButton>
@@ -527,6 +577,15 @@ function EditorToolbar() {
 
   return (
     <div className="editor-toolbar">
+      <input
+        type="file"
+        id="editor-upload-image"
+        name="editor-upload-image"
+        accept="image/jpeg,image/jpg,image/png,image/gif"
+        style={{ display: "none" }}
+        onChange={onImageSelected}
+      />
+
       {btnList.map((parent, index) => {
         return (
           <div className="toolbar-group" key={`group-${index}`}>

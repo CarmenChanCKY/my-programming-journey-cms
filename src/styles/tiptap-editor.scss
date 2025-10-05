@@ -1,5 +1,5 @@
 .tiptap-editor-container {
-  @apply border-[1px] border-slate-300;
+  @apply border-[1px] border-slate-300 bg-white rounded-md;
 
   .editor-toolbar {
     @apply flex items-center flex-wrap px-2 py-1 border-b-[1px] border-slate-300 gap-y-2;
@@ -14,7 +14,7 @@
   }
 
   .tiptap {
-    @apply p-2;
+    @apply p-2 outline-none ring-0;
     line-height: 2;
     letter-spacing: 0.1px;
 
