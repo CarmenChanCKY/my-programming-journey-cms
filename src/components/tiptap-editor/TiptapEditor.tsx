@@ -10,6 +10,7 @@ import Highlight from "@tiptap/extension-highlight";
 import Code from "@tiptap/extension-code";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
+import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
 import CodeBlockPrism from "./prism-plugin";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import Callout from "./callout-plugin";
@@ -71,6 +72,8 @@ const extensions = [
     },
   }),
   Callout,
+  ImageExtension,
+  ImageAligner,
 ];
 
 const content = "<p>Hello World!</p>";
@@ -79,11 +82,11 @@ function TiptapEditor() {
   return (
     <div className="tiptap-editor-container">
       <EditorProvider
-        // onUpdate={(props) => {
-        //   console.log(props.editor.getHTML());
-        // }}
+        onUpdate={(props) => {
+          console.log(props.editor.getHTML());
+        }}
         slotBefore={<EditorToolbar />}
-        extensions={extensions}
+        extensions={extensions as any}
         content={content}
         injectCSS={true}
       ></EditorProvider>

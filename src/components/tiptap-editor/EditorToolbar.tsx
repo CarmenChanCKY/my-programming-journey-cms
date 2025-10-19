@@ -34,6 +34,8 @@ import calloutItemList from "./callout-plugin/callout-color-list";
 import validateFileInput from "@/helper/uploader";
 import { GlobalContext } from "@/context/GlobalContext";
 import { serverApi } from "@/helper/fetcher";
+import { log } from "@/helper/common";
+import { ImageAligner } from "@harshtalks/image-tiptap";
 
 function EditorToolbar() {
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
@@ -86,26 +88,57 @@ function EditorToolbar() {
   };
 
   const onImageSelected = async (e: any) => {
-    const files: FileList = e.target.files;
-    if (files && files.length > 0) {
-      const validateResult = validateFileInput(files[0]);
-      console.log(files[0]);
-      console.log(validateResult);
-      if (typeof validateResult === "string" && validateResult !== "") {
-        toastDispatch({
-          actionType: "insert",
-          text: validateResult,
-          type: "error",
-        });
-      } else {
-        // TODO: https://developers.google.com/workspace/drive/api/guides/about-sdk
+    if (!showLoading) {
+      const files: FileList = e.target.files;
+      if (files && files.length > 0) {
+        const validateResult = validateFileInput(files[0]);
 
-        const form = new FormData();
-        form.append("file", files[0]);
+        if (typeof validateResult === "string" && validateResult !== "") {
+          toastDispatch({
+            actionType: "insert",
+            text: validateResult,
+            type: "error",
+          });
+        } else {
+          try {
+            setLoading(true);
+            const form = new FormData();
+            form.append("file", files[0]);
 
-        const result: any = await serverApi("/upload", "post", {}, form);
+            const result: any = await serverApi("/upload", "post", {}, form);
+            log("--- Upload image success ---");
+            log(result);
 
-        console.log(result);
+            if (!result.success) {
+              if (result.type === "redirect") {
+                window.open(result.data.reauthUrl, "_blank");
+              } else if (result.type === "error") {
+                toastDispatch({
+                  actionType: "insert",
+                  text: result.data,
+                  type: "error",
+                });
+              } else {
+                toastDispatch({
+                  actionType: "insert",
+                  text: "Upload image fail",
+                  type: "error",
+                });
+              }
+            } else {
+              editor
+                .chain()
+                .focus()
+                .setImage({ src: result.data.embedLink })
+                .run();
+            }
+          } catch (error: any) {
+            log("--- Upload image error ---");
+            log(error);
+          } finally {
+            setLoading(false);
+          }
+        }
       }
     }
   };
@@ -383,12 +416,6 @@ function EditorToolbar() {
     ],
 
     /* link, image, youtube */
-    /* TODO: image */
-    // https://tiptap.dev/docs/editor/extensions/nodes/image
-    // https://tiptap.dev/docs/editor/extensions/functionality/table-kit
-    // https://www.npmjs.com/package/@pentestpad/tiptap-extension-figure
-    // https://github.com/harshtalks/tiptap-plugins/tree/main/packages/image-tiptap
-    // https://github.com/carlosvaldesweb/tiptap-extension-upload-image
     [
       {
         type: "button",
@@ -419,7 +446,11 @@ function EditorToolbar() {
       },
     ],
 
+    // TODO: table
+    //
+
     /* blockquote, callout, horizontal rule */
+    // https://tiptap.dev/docs/editor/extensions/functionality/table-kit
     [
       {
         type: "button",
@@ -568,7 +599,6 @@ function EditorToolbar() {
     return null;
   };
 
-  // TODO: https://react-icons.github.io/react-icons/icons/md/
   // TODO: https://tiptap.dev/docs/examples/basics/default-text-editor
   // TODO: https://tiptap.dev/docs/editor/extensions/functionality/bubble-menu
   // TODO: https://tiptap.dev/docs/editor/extensions/nodes/table#page-title
@@ -576,33 +606,65 @@ function EditorToolbar() {
   // TODO: https://egghead.io/lessons/vue-add-custom-routes-for-hidden-pages-with-vue-js-and-nuxt-js
 
   return (
-    <div className="editor-toolbar">
-      <input
-        type="file"
-        id="editor-upload-image"
-        name="editor-upload-image"
-        accept="image/jpeg,image/jpg,image/png,image/gif"
-        style={{ display: "none" }}
-        onChange={onImageSelected}
-      />
+    <ImageAligner.Root editor={editor}>
+      <ImageAligner.AlignMenu>
+        <ImageAligner.Items className="bg-white flex items-center border rounded p-2">
+          <ImageAligner.Item alignment="left">
+            <IconButton
+              plain
+              icon={<MdFormatAlignLeft />}
+              color="stone"
+              size="sm"
+            ></IconButton>
+          </ImageAligner.Item>
+          <ImageAligner.Item alignment="center">
+            {" "}
+            <IconButton
+              plain
+              icon={<MdFormatAlignCenter />}
+              color="stone"
+              size="sm"
+            ></IconButton>
+          </ImageAligner.Item>
+          <ImageAligner.Item alignment="right">
+            {" "}
+            <IconButton
+              plain
+              icon={<MdFormatAlignRight />}
+              color="stone"
+              size="sm"
+            ></IconButton>
+          </ImageAligner.Item>
+        </ImageAligner.Items>
+      </ImageAligner.AlignMenu>
+      <div className="editor-toolbar">
+        <input
+          type="file"
+          id="editor-upload-image"
+          name="editor-upload-image"
+          accept="image/jpeg,image/jpg,image/png,image/gif"
+          style={{ display: "none" }}
+          onChange={onImageSelected}
+        />
 
-      {btnList.map((parent, index) => {
-        return (
-          <div className="toolbar-group" key={`group-${index}`}>
-            {parent.map((child, childIndex) => {
-              return genEditorToolbarBtn(child, index, childIndex);
-            })}
-          </div>
-        );
-      })}
+        {btnList.map((parent, index) => {
+          return (
+            <div className="toolbar-group" key={`group-${index}`}>
+              {parent.map((child, childIndex) => {
+                return genEditorToolbarBtn(child, index, childIndex);
+              })}
+            </div>
+          );
+        })}
 
-      <EditorColorPicker
-        openDialog={openColorPicker}
-        currentColor={colorPickerColor}
-        showLoading={false}
-        callback={onColorPickerUpdated}
-      ></EditorColorPicker>
-    </div>
+        <EditorColorPicker
+          openDialog={openColorPicker}
+          currentColor={colorPickerColor}
+          showLoading={false}
+          callback={onColorPickerUpdated}
+        ></EditorColorPicker>
+      </div>
+    </ImageAligner.Root>
   );
 }
 

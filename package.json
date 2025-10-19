@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.27.0",
+    "@harshtalks/image-tiptap": "^1.5.0",
     "@tiptap/extension-code": "^2.11.7",
     "@tiptap/extension-color": "^2.11.7",
     "@tiptap/extension-highlight": "^2.11.7",
