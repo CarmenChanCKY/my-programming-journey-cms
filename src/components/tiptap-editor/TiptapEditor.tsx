@@ -11,6 +11,7 @@ import Code from "@tiptap/extension-code";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
+import { TableKit } from "@tiptap/extension-table";
 import CodeBlockPrism from "./prism-plugin";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import Callout from "./callout-plugin";
@@ -74,6 +75,9 @@ const extensions = [
   Callout,
   ImageExtension,
   ImageAligner,
+  TableKit.configure({
+    table: { HTMLAttributes: { class: "post-table" }, resizable: false },
+  }),
 ];
 
 const content = "<p>Hello World!</p>";

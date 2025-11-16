@@ -14,25 +14,9 @@
   }
 }
 
-@media screen and (max-width: 475px) {
+@media screen and (min-width: 1281px) {
   @for $i from 1 through 12 {
-    .grid-sys-col.grid-sys-col-xs-#{$i} {
-      flex: calc(100% / 12 * $i) 0 0;
-    }
-  }
-}
-
-@media screen and (max-width: 640px) {
-  @for $i from 1 through 12 {
-    .grid-sys-col.grid-sys-col-sm-#{$i} {
-      flex: calc(100% / 12 * $i) 0 0;
-    }
-  }
-}
-
-@media screen and (max-width: 960px) {
-  @for $i from 1 through 12 {
-    .grid-sys-col.grid-sys-col-md-#{$i} {
+    .grid-sys-col.grid-sys-col-xl-#{$i} {
       flex: calc(100% / 12 * $i) 0 0;
     }
   }
@@ -46,9 +30,25 @@
   }
 }
 
-@media screen and (min-width: 1281px) {
+@media screen and (max-width: 960px) {
   @for $i from 1 through 12 {
-    .grid-sys-col.grid-sys-col-xl-#{$i} {
+    .grid-sys-col.grid-sys-col-md-#{$i} {
+      flex: calc(100% / 12 * $i) 0 0;
+    }
+  }
+}
+
+@media screen and (max-width: 640px) {
+  @for $i from 1 through 12 {
+    .grid-sys-col.grid-sys-col-sm-#{$i} {
+      flex: calc(100% / 12 * $i) 0 0;
+    }
+  }
+}
+
+@media screen and (max-width: 475px) {
+  @for $i from 1 through 12 {
+    .grid-sys-col.grid-sys-col-xs-#{$i} {
       flex: calc(100% / 12 * $i) 0 0;
     }
   }

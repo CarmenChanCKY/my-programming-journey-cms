@@ -22,6 +22,7 @@ import {
   MdCode,
   MdAddLink,
   MdAttachFile,
+  MdTableView,
 } from "react-icons/md";
 import IconButton from "@/components/ui/button/IconButton";
 import { customTooltipTheme } from "@/helper/flowbiteTheme";
@@ -36,6 +37,7 @@ import { GlobalContext } from "@/context/GlobalContext";
 import { serverApi } from "@/helper/fetcher";
 import { log } from "@/helper/common";
 import { ImageAligner } from "@harshtalks/image-tiptap";
+import InsertTableDialog from "./table/InsertTableDialog";
 
 function EditorToolbar() {
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
@@ -46,6 +48,9 @@ function EditorToolbar() {
   const [openColorPicker, setOpenColorPicker] = useState(false);
   const [colorPickerType, setColorPickerType] = useState("");
   const [colorPickerColor, setColorPickerColor] = useState("#000000");
+
+  // for table
+  const [openInsertTableDialog, setOpenInsertTableDialog] = useState(false);
 
   const setEditorLink = useCallback(() => {
     const previousUrl = editor?.getAttributes("link").href;
@@ -446,11 +451,22 @@ function EditorToolbar() {
       },
     ],
 
-    // TODO: table
-    //
+    /* table */
+    [
+      {
+        type: "button",
+        name: "table",
+        active: editor.isActive("table"),
+        icon: <MdTableView />,
+        tooltipText: "Table",
+        disabled: !editor.can().insertTable(),
+        onClick: () => {
+          setOpenInsertTableDialog(true);
+        },
+      },
+    ],
 
     /* blockquote, callout, horizontal rule */
-    // https://tiptap.dev/docs/editor/extensions/functionality/table-kit
     [
       {
         type: "button",
@@ -541,6 +557,23 @@ function EditorToolbar() {
     setOpenColorPicker(false);
   };
 
+  const onInsertTableDialogUpdated = (
+    type: "confirm" | "close",
+    row?: number,
+    column?: number,
+    includeHeading?: boolean
+  ) => {
+    if (type === "confirm") {
+      editor
+        .chain()
+        .focus()
+        .insertTable({ rows: row, cols: column, withHeaderRow: includeHeading })
+        .run();
+    }
+
+    setOpenInsertTableDialog(false);
+  };
+
   const genEditorToolbarBtn = (
     child: any,
     index: number,
@@ -599,41 +632,35 @@ function EditorToolbar() {
     return null;
   };
 
-  // TODO: https://tiptap.dev/docs/examples/basics/default-text-editor
-  // TODO: https://tiptap.dev/docs/editor/extensions/functionality/bubble-menu
   // TODO: https://tiptap.dev/docs/editor/extensions/nodes/table#page-title
-
-  // TODO: https://egghead.io/lessons/vue-add-custom-routes-for-hidden-pages-with-vue-js-and-nuxt-js
 
   return (
     <ImageAligner.Root editor={editor}>
       <ImageAligner.AlignMenu>
         <ImageAligner.Items className="bg-white flex items-center border rounded p-2">
           <ImageAligner.Item alignment="left">
-            <IconButton
-              plain
-              icon={<MdFormatAlignLeft />}
-              color="stone"
-              size="sm"
-            ></IconButton>
+            <span
+              className="inline-flex items-center justify-center p-1 rounded text-stone-600 hover:bg-gray-100"
+              aria-hidden="true"
+            >
+              <MdFormatAlignLeft size={18} />
+            </span>
           </ImageAligner.Item>
           <ImageAligner.Item alignment="center">
-            {" "}
-            <IconButton
-              plain
-              icon={<MdFormatAlignCenter />}
-              color="stone"
-              size="sm"
-            ></IconButton>
+            <span
+              className="inline-flex items-center justify-center p-1 rounded text-stone-600 hover:bg-gray-100"
+              aria-hidden="true"
+            >
+              <MdFormatAlignCenter size={18} />
+            </span>
           </ImageAligner.Item>
           <ImageAligner.Item alignment="right">
-            {" "}
-            <IconButton
-              plain
-              icon={<MdFormatAlignRight />}
-              color="stone"
-              size="sm"
-            ></IconButton>
+            <span
+              className="inline-flex items-center justify-center p-1 rounded text-stone-600 hover:bg-gray-100"
+              aria-hidden="true"
+            >
+              <MdFormatAlignRight size={18} />
+            </span>
           </ImageAligner.Item>
         </ImageAligner.Items>
       </ImageAligner.AlignMenu>
@@ -663,6 +690,12 @@ function EditorToolbar() {
           showLoading={false}
           callback={onColorPickerUpdated}
         ></EditorColorPicker>
+
+        <InsertTableDialog
+          openDialog={openInsertTableDialog}
+          showLoading={false}
+          callback={onInsertTableDialogUpdated}
+        ></InsertTableDialog>
       </div>
     </ImageAligner.Root>
   );

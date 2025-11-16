@@ -66,9 +66,9 @@ const setInputClass = (props: InputFieldType, isInvalid: boolean = false) => {
 
 const formatInput = (e: any, props: InputFieldType) => {
   if (props.inputNumberOnly) {
-    return inputNumberOnly(e.nativeEvent);
+    return inputNumberOnly(e);
   } else if (props.inputFloatingOnly) {
-    return inputFloatingOnly(e.nativeEvent);
+    return inputFloatingOnly(e.nativeEvent.data);
   }
 
   return true;
@@ -105,7 +105,7 @@ function InputField(props: InputFieldType) {
           {...register(props.name, {
             setValueAs(value) {
               // trim the input value
-              return value.trim();
+              return typeof value === "string" ? value.trim() : value;
             },
             required: { value: props.required ?? false, message: "Required." },
             validate: (v) => {

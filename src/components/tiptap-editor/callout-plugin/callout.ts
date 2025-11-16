@@ -1,4 +1,4 @@
-import { mergeAttributes, Node, wrappingInputRule } from "@tiptap/core";
+import { mergeAttributes, Node } from "@tiptap/core";
 import calloutItemList from "./callout-color-list";
 
 export interface CalloutOptions {
@@ -8,7 +8,7 @@ export interface CalloutOptions {
    * @example { class: 'foo' }
    */
   HTMLAttributes: Record<string, any>;
-  colorList: Array<String>;
+  colorList: Array<string>;
 }
 
 declare module "@tiptap/core" {
@@ -17,11 +17,11 @@ declare module "@tiptap/core" {
       /**
        * Set a callout node
        */
-      setCallout: (attributes: { color: String }) => ReturnType;
+      setCallout: (attributes: { color: string }) => ReturnType;
       /**
        * Toggle a callout node
        */
-      toggleCallout: (attributes: { color: String }) => ReturnType;
+      toggleCallout: (attributes: { color: string }) => ReturnType;
       /**
        * Unset a callout node
        */

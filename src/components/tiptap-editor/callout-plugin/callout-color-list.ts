@@ -1,4 +1,4 @@
-const calloutItemList: Array<String> = [
+const calloutItemList: Array<string> = [
   "primary",
   "secondary",
   "accent",
