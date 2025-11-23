@@ -464,6 +464,83 @@ function EditorToolbar() {
           setOpenInsertTableDialog(true);
         },
       },
+      ...(editor.isActive("table")
+        ? [
+            {
+              type: "dropdown",
+              name: "table_helper",
+              active: false,
+              text: () => {
+                return "TABLE HELPER";
+              },
+              itemList: [
+                {
+                  text: "Add Row Before",
+                  onClick: () => {
+                    editor.chain().focus().addRowBefore().run();
+                  },
+                },
+                {
+                  text: "Add Row After",
+                  onClick: () => {
+                    editor.chain().focus().addRowAfter().run();
+                  },
+                },
+                {
+                  isDivider: true,
+                },
+                {
+                  text: "Add Column Before",
+                  onClick: () => {
+                    editor.chain().focus().addColumnBefore().run();
+                  },
+                },
+                {
+                  text: "Add Column After",
+                  onClick: () => {
+                    editor.chain().focus().addColumnAfter().run();
+                  },
+                },
+                {
+                  isDivider: true,
+                },
+                {
+                  text: "Merge Cell",
+                  onClick: () => {
+                    editor.chain().focus().mergeCells().run();
+                  },
+                },
+                {
+                  text: "Split Cell",
+                  onClick: () => {
+                    editor.chain().focus().splitCell().run();
+                  },
+                },
+                {
+                  isDivider: true,
+                },
+                {
+                  text: "Delete Row",
+                  onClick: () => {
+                    editor.chain().focus().deleteRow().run();
+                  },
+                },
+                {
+                  text: "Delete Column",
+                  onClick: () => {
+                    editor.chain().focus().deleteColumn().run();
+                  },
+                },
+                {
+                  text: "Delete Table",
+                  onClick: () => {
+                    editor.chain().focus().deleteTable().run();
+                  },
+                },
+              ],
+            },
+          ]
+        : []),
     ],
 
     /* blockquote, callout, horizontal rule */
@@ -631,8 +708,6 @@ function EditorToolbar() {
 
     return null;
   };
-
-  // TODO: https://tiptap.dev/docs/editor/extensions/nodes/table#page-title
 
   return (
     <ImageAligner.Root editor={editor}>
