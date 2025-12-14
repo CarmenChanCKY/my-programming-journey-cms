@@ -198,7 +198,7 @@ function Post() {
               tags: obj.tags_data.join(", "),
               actionEditDelete: EditDeleteButton({
                 editCallback: () => {
-                  // onEditButtonClick(result.data[index].id, index);
+                  navigate(generateRoutePath(`/post/detail/${obj.id}`));
                 },
                 deleteCallback: () => {
                   onRemoveButtonClick(index);
