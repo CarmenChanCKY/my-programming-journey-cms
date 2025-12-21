@@ -11,29 +11,29 @@ import { serverApi } from "@/helper/fetcher";
 import { useContext, useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
+import DropdownField, {
+  DropdownItemListInterface,
+} from "@/components/ui/form/DropdownField";
 
 function PostDetail() {
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { id } = useParams();
   const [categoryList, setCategoryList] = useState<
-    Array<{
-      id: number;
-      name: string;
-    }>
+    Array<DropdownItemListInterface>
   >([]);
-  const [tagsList, setTagsList] = useState<
-    Array<{
-      id: number;
-      name: string;
-    }>
-  >([]);
+  const [tagsList, setTagsList] = useState<Array<DropdownItemListInterface>>(
+    []
+  );
 
   const postDetailForm = useForm({
     mode: "onSubmit",
     defaultValues: {
       "post-title": "",
       "post-date": new Date(),
+      "post-slug": "",
+      "post-category": -1 as string | number,
+      "post-tags": [] as Array<number> | string,
     },
   });
 
@@ -79,6 +79,17 @@ function PostDetail() {
 
       postDetailForm.setValue("post-title", result.post_data.title);
       postDetailForm.setValue("post-date", new Date(result.post_data.date));
+      postDetailForm.setValue("post-slug", result.post_data.slug);
+
+      // search category name
+      postDetailForm.setValue("post-category", result.post_data.category_id);
+
+      postDetailForm.setValue(
+        "post-tags",
+        result.tags_data.map((obj: any) => {
+          return obj.tags_id;
+        })
+      );
 
       getCategoryList();
       getTagsList();
@@ -105,7 +116,11 @@ function PostDetail() {
       if (Array.isArray(result)) {
         setCategoryList([]);
       } else {
-        setCategoryList(result.data);
+        setCategoryList(
+          result.data.map((obj: any) => {
+            return { text: obj.name, value: obj.id };
+          })
+        );
       }
     } catch (error) {
       log("--- Get Category data error ---");
@@ -131,7 +146,11 @@ function PostDetail() {
       if (Array.isArray(result)) {
         setTagsList([]);
       } else {
-        setTagsList(result.data);
+        setTagsList(
+          result.data.map((obj: any) => {
+            return { text: obj.name, value: obj.id };
+          })
+        );
       }
     } catch (error) {
       log("--- Get Tags data error ---");
@@ -165,6 +184,42 @@ function PostDetail() {
     };
   }, []);
 
+  useEffect(() => {
+    const categoryID = postDetailForm.getValues("post-category");
+
+    const categoryIndex = categoryList.findIndex(
+      (obj: DropdownItemListInterface) => {
+        return parseInt(obj.value) === categoryID;
+      }
+    );
+
+    if (categoryIndex !== -1) {
+      postDetailForm.setValue(
+        "post-category",
+        categoryList[categoryIndex].text
+      );
+    }
+  }, [categoryList]);
+
+  useEffect(() => {
+    const tagsIdList: any = postDetailForm.getValues("post-tags");
+
+    const filterTags = tagsList.filter((obj: DropdownItemListInterface) => {
+      return tagsIdList.includes(obj.value);
+    });
+
+    if (filterTags.length > 0) {
+      postDetailForm.setValue(
+        "post-tags",
+        filterTags
+          .map((obj: DropdownItemListInterface) => {
+            return obj.text;
+          })
+          .join(", ")
+      );
+    }
+  }, [tagsList]);
+
   return (
     <>
       <Card flat={true}>
@@ -193,14 +248,37 @@ function PostDetail() {
                   ></DatePickerField>
                 </GridColumn>
 
-                <GridColumn
-                  xl={6}
-                  lg={6}
-                  md={6}
-                  sm={6}
-                  xs={12}
-                  cols={12}
-                ></GridColumn>
+                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                  <InputField
+                    id="post-slug"
+                    name="post-slug"
+                    labelText="Slug"
+                    required={true}
+                    boldLabel={true}
+                  ></InputField>
+                </GridColumn>
+
+                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                  <DropdownField
+                    labelText="Category"
+                    dropdownFieldID="post-category"
+                    dropdownListID="post-category-list"
+                    name="post-category"
+                    itemList={categoryList}
+                    required
+                  ></DropdownField>
+                </GridColumn>
+                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                  <DropdownField
+                    labelText="Tags"
+                    dropdownFieldID="post-tags"
+                    dropdownListID="post-tags-list"
+                    name="post-tags"
+                    itemList={tagsList}
+                    multiple
+                    required
+                  ></DropdownField>
+                </GridColumn>
 
                 <GridColumn cols={12}>
                   <label className="pb-1 font-bold">Post Content</label>

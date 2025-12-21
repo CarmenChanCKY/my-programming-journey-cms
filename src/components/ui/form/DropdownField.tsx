@@ -9,6 +9,7 @@ import {
   ControllerRenderProps,
   FieldValues,
   useFormContext,
+  useWatch,
 } from "react-hook-form";
 
 export interface DropdownItemListInterface {
@@ -39,11 +40,13 @@ const downIconElement = () => {
   return <div className="suffix-icon">{downIcon}</div>;
 };
 
-const activeIndexList = new Set<number>();
-
 function DropdownField(props: DropdownFieldInterface) {
   const { control, setValue } = useFormContext();
   const [dropdownControl, setDropdownControl] = useState<Dropdown | null>(null);
+  const watchedValue = useWatch({ control, name: props.name });
+  const [activeIndexList, setActiveIndexList] = useState<Set<number>>(
+    () => new Set<number>()
+  );
 
   useEffect(() => {
     const fieldEL = document.getElementById(props.dropdownFieldID);
@@ -56,6 +59,30 @@ function DropdownField(props: DropdownFieldInterface) {
     setDropdownControl(new Dropdown(listEl, fieldEL, options));
   }, []);
 
+  useEffect(() => {
+    const newSet = new Set<number>();
+    const value = watchedValue;
+    let selectedTexts: string[] = [];
+
+    if (props.multiple) {
+      if (Array.isArray(value)) {
+        selectedTexts = value.map((v: any) => String(v));
+      } else if (typeof value === "string" && value !== "") {
+        selectedTexts = value.split(", ").map((s) => s.trim());
+      }
+    } else {
+      if (value !== undefined && value !== null && value !== "") {
+        selectedTexts = [String(value)];
+      }
+    }
+
+    props.itemList.forEach((item, idx) => {
+      if (selectedTexts.includes(String(item.text))) newSet.add(idx);
+    });
+
+    setActiveIndexList(newSet);
+  }, [props.itemList, watchedValue, props.multiple]);
+
   function selectItem(
     e: any,
     index: number,
@@ -64,26 +91,31 @@ function DropdownField(props: DropdownFieldInterface) {
     e.stopPropagation();
 
     if (props.multiple) {
-      let currentFieldValue = field.value
+      const currentFieldValue = field.value
         .split(", ")
         .filter((value: string) => {
           return value !== undefined && value !== null && value !== "";
         });
-      if (activeIndexList.has(index)) {
-        currentFieldValue = currentFieldValue.filter((text: string) => {
+
+      let newValues = [...currentFieldValue];
+      const newSet = new Set(activeIndexList);
+
+      if (newSet.has(index)) {
+        newValues = newValues.filter((text: string) => {
           return text !== props.itemList[index].text;
         });
 
-        activeIndexList.delete(index);
+        newSet.delete(index);
       } else {
-        currentFieldValue.push(props.itemList[index].text);
-        activeIndexList.add(index);
+        newValues.push(props.itemList[index].text);
+        newSet.add(index);
       }
-
-      setValue(props.name, currentFieldValue.join(", "));
+      setActiveIndexList(newSet);
+      setValue(props.name, newValues.join(", "));
     } else {
-      activeIndexList.clear();
-      activeIndexList.add(index);
+      const newSet = new Set<number>();
+      newSet.add(index);
+      setActiveIndexList(newSet);
       setValue(props.name, props.itemList[index].text);
       dropdownControl?.hide();
     }
@@ -111,7 +143,6 @@ function DropdownField(props: DropdownFieldInterface) {
               className="cursor-pointer"
               inputClassName="cursor-pointer"
             ></InputField>
-
             <div
               id={props.dropdownListID}
               className="custom-dropdown-list hidden"
@@ -120,13 +151,7 @@ function DropdownField(props: DropdownFieldInterface) {
                 {props.itemList.map((item, index) => {
                   return (
                     <li
-                      className={
-                        activeIndexList.has(index) ||
-                        (activeIndexList.size <= 0 &&
-                          field.value === props.itemList[index].text)
-                          ? "active"
-                          : ""
-                      }
+                      className={activeIndexList.has(index) ? "active" : ""}
                       key={index}
                       onClick={(e: any) => selectItem(e, index, field)}
                     >
