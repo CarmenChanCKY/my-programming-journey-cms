@@ -8,6 +8,10 @@ https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javasc
  * Added by Souvik Mandal [@SimpleIndian]
  */
 
+:root {
+  --source-code-pro: "Source Code Pro", monospace !important;
+}
+
 code[class*="language-"],
 pre[class*="language-"] {
   color: #d6deeb;

@@ -27,7 +27,7 @@ import {
 import IconButton from "@/components/ui/button/IconButton";
 import { customTooltipTheme } from "@/helper/flowbiteTheme";
 import CustomDropdownButton from "@/components/ui/button/CustomDropdownButton";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import EditorColorPicker from "@/components/tiptap-editor/EditorColorPicker";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import { FaYoutube } from "react-icons/fa";
@@ -51,6 +51,21 @@ function EditorToolbar() {
 
   // for table
   const [openInsertTableDialog, setOpenInsertTableDialog] = useState(false);
+
+  // for code block
+  const [activeCodeLang, setActiveCodeLang] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!editor) return;
+    const update = () => setActiveCodeLang(getActiveCodeBlockLanguage(editor));
+    update();
+
+    editor.on("selectionUpdate", update);
+
+    return () => {
+      editor.off("selectionUpdate", update);
+    };
+  }, [editor]);
 
   const setEditorLink = useCallback(() => {
     const previousUrl = editor?.getAttributes("link").href;
@@ -148,6 +163,19 @@ function EditorToolbar() {
     }
   };
 
+  const getActiveCodeBlockLanguage = (ed?: any) => {
+    if (!ed) return null;
+    const { state } = ed;
+    const { $from } = state.selection;
+
+    // If cursor inside a codeBlock, use that language
+    if ($from.parent.type.name === "codeBlock") {
+      return $from.parent.attrs.language || "html";
+    }
+
+    return "html";
+  };
+
   const btnList: Array<Array<any>> = [
     /* undo, redo */
     [
@@ -213,36 +241,42 @@ function EditorToolbar() {
           },
           {
             text: "H1",
+            selected: editor?.isActive("heading", { level: 1 }),
             onClick: () => {
               editor.chain().focus().toggleHeading({ level: 1 }).run();
             },
           },
           {
             text: "H2",
+            selected: editor?.isActive("heading", { level: 2 }),
             onClick: () => {
               editor.chain().focus().toggleHeading({ level: 2 }).run();
             },
           },
           {
             text: "H3",
+            selected: editor?.isActive("heading", { level: 3 }),
             onClick: () => {
               editor.chain().focus().toggleHeading({ level: 3 }).run();
             },
           },
           {
             text: "H4",
+            selected: editor?.isActive("heading", { level: 4 }),
             onClick: () => {
               editor.chain().focus().toggleHeading({ level: 4 }).run();
             },
           },
           {
             text: "H5",
+            selected: editor?.isActive("heading", { level: 5 }),
             onClick: () => {
               editor.chain().focus().toggleHeading({ level: 5 }).run();
             },
           },
           {
             text: "H6",
+            selected: editor?.isActive("heading", { level: 6 }),
             onClick: () => {
               editor.chain().focus().toggleHeading({ level: 6 }).run();
             },
@@ -386,6 +420,7 @@ function EditorToolbar() {
         itemList: prismLanguageList.map((obj) => {
           return {
             text: obj.text,
+            selected: activeCodeLang === obj.value,
             onClick: () => {
               editor
                 .chain()

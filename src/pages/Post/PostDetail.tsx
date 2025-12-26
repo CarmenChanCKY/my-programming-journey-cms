@@ -19,6 +19,7 @@ function PostDetail() {
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [pageInit, setPageInit] = useState<boolean>(false);
   const [categoryList, setCategoryList] = useState<
     Array<DropdownItemListInterface>
   >([]);
@@ -34,6 +35,7 @@ function PostDetail() {
       "post-slug": "",
       "post-category": -1 as string | number,
       "post-tags": [] as Array<number> | string,
+      "post-content": "",
     },
   });
 
@@ -80,8 +82,8 @@ function PostDetail() {
       postDetailForm.setValue("post-title", result.post_data.title);
       postDetailForm.setValue("post-date", new Date(result.post_data.date));
       postDetailForm.setValue("post-slug", result.post_data.slug);
+      postDetailForm.setValue("post-content", result.post_data.content);
 
-      // search category name
       postDetailForm.setValue("post-category", result.post_data.category_id);
 
       postDetailForm.setValue(
@@ -93,10 +95,13 @@ function PostDetail() {
 
       getCategoryList();
       getTagsList();
+
+      setPageInit(true);
     } catch (error) {
       log("--- Get Post data error ---");
       log(error);
     } finally {
+      setLoading(false);
     }
   }
 
@@ -174,6 +179,7 @@ function PostDetail() {
     updateAbortControllerRef("tag");
     updateAbortControllerRef("category");
 
+    setLoading(true);
     getPost();
 
     return () => {
@@ -237,7 +243,6 @@ function PostDetail() {
                     name="post-title"
                     labelText="Post Title"
                     required={true}
-                    boldLabel={true}
                   ></InputField>
                 </GridColumn>
 
@@ -254,7 +259,6 @@ function PostDetail() {
                     name="post-slug"
                     labelText="Slug"
                     required={true}
-                    boldLabel={true}
                   ></InputField>
                 </GridColumn>
 
@@ -281,8 +285,10 @@ function PostDetail() {
                 </GridColumn>
 
                 <GridColumn cols={12}>
-                  <label className="pb-1 font-bold">Post Content</label>
-                  <TiptapEditor></TiptapEditor>
+                  <label className="pb-1">Post Content</label>
+                  {pageInit && (
+                    <TiptapEditor name="post-content"></TiptapEditor>
+                  )}
                 </GridColumn>
               </GridRow>
             </GridContainer>

@@ -5,7 +5,7 @@ import { mergeAttributes } from "@tiptap/react";
 
 export interface CodeBlockPrismOptions extends CodeBlockOptions {
   defaultLanguage: string | null | undefined;
-  languageList: Array<String>;
+  languageList: Array<string>;
 }
 
 export const CodeBlockPrism = CodeBlock.extend<CodeBlockPrismOptions>({

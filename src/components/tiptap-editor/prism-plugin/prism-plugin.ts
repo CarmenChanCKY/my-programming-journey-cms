@@ -49,7 +49,7 @@ function getDecorations({
   doc: ProsemirrorNode;
   name: string;
   defaultLanguage: string | null | undefined;
-  languageList: Array<String>;
+  languageList: Array<string>;
 }) {
   const decorations: Decoration[] = [];
 
@@ -107,7 +107,7 @@ export function PrismPlugin({
 }: {
   name: string;
   defaultLanguage: string | null | undefined;
-  languageList: Array<String>;
+  languageList: Array<string>;
 }) {
   if (!defaultLanguage) {
     throw Error("You must specify the defaultLanguage parameter");

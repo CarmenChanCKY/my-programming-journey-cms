@@ -2,10 +2,16 @@ import { Dropdown, DropdownDivider, DropdownItem } from "flowbite-react";
 import CustomButton from "@/components/ui/button/CustomButton";
 import { MdArrowDropDown } from "react-icons/md";
 import { forwardRef } from "react";
+import { customDropdownTheme } from "@/helper/flowbiteTheme";
 
 interface CustomDropdownButtonType {
   text: string;
-  itemList: Array<{ isDivider?: boolean; text: string; onClick: () => void }>;
+  itemList: Array<{
+    isDivider?: boolean;
+    text: string;
+    onClick: () => void;
+    selected?: boolean;
+  }>;
   className?: string;
   color?: string;
   outline?: boolean;
@@ -15,6 +21,7 @@ interface CustomDropdownButtonType {
   loading?: boolean;
 }
 
+// TODO: dropdown太長
 const CustomDropdownButton = forwardRef(
   (props: CustomDropdownButtonType, ref: any) => {
     return (
@@ -22,6 +29,8 @@ const CustomDropdownButton = forwardRef(
         label=""
         dismissOnClick={true}
         className={props.className}
+        placement="bottom"
+        theme={customDropdownTheme}
         renderTrigger={() => (
           <CustomButton
             ref={ref}
@@ -42,7 +51,17 @@ const CustomDropdownButton = forwardRef(
             child.isDivider ? (
             <DropdownDivider />
           ) : (
-            <DropdownItem key={index} onClick={child.onClick}>
+            <DropdownItem
+              className={
+                child.selected !== undefined &&
+                child.selected !== null &&
+                child.selected
+                  ? "bg-gray-200"
+                  : ""
+              }
+              key={index}
+              onClick={child.onClick}
+            >
               {child.text}
             </DropdownItem>
           );

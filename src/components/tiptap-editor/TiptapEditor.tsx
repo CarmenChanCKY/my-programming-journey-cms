@@ -15,10 +15,16 @@ import { TableKit } from "@tiptap/extension-table";
 import CodeBlockPrism from "./prism-plugin";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import Callout from "./callout-plugin";
+import { Controller, useFormContext } from "react-hook-form";
 import "@/styles/tiptap-editor.scss";
 import "@/styles/prism.css";
 
-// define your extension array
+interface EditorInterface {
+  name: string;
+  // validate params
+  required?: boolean;
+}
+
 const extensions = [
   StarterKit.configure({ codeBlock: false }),
   Underline,
@@ -80,21 +86,46 @@ const extensions = [
   }),
 ];
 
-const content = "<p>Hello World!</p>";
+function TiptapEditor(props: EditorInterface) {
+  const { control, setValue, formState, getFieldState, getValues } =
+    useFormContext();
+  const { invalid, error } = getFieldState(props.name, formState);
 
-function TiptapEditor() {
   return (
-    <div className="tiptap-editor-container">
-      <EditorProvider
-        onUpdate={(props) => {
-          console.log(props.editor.getHTML());
-        }}
-        slotBefore={<EditorToolbar />}
-        extensions={extensions as any}
-        content={content}
-        injectCSS={true}
-      ></EditorProvider>
-    </div>
+    <Controller
+      control={control}
+      name={props.name}
+      rules={{
+        required: { value: props.required ?? false, message: "Required." },
+      }}
+      render={({ field }) => {
+        // remove ref from the spread to avoid passing a ref to a function component
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { ref, ...fieldWithoutRef } = field;
+
+        return (
+          <>
+            <div className="tiptap-editor-container">
+              <EditorProvider
+                {...fieldWithoutRef}
+                onUpdate={({ editor }) => {
+                  const html = editor.getHTML();
+                  field.onChange(html);
+                  setValue(props.name, html);
+                }}
+                slotBefore={<EditorToolbar />}
+                extensions={extensions as any}
+                content={field.value || getValues(props.name)}
+                injectCSS={true}
+              ></EditorProvider>
+            </div>
+
+            {/* error message */}
+            {invalid ? <div className="error-msg">{error?.message}</div> : null}
+          </>
+        );
+      }}
+    ></Controller>
   );
 }
 

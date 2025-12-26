@@ -106,3 +106,13 @@ export const customTableTheme: CustomFlowbiteTheme["table"] = {
 export const customTooltipTheme: CustomFlowbiteTheme["tooltip"] = {
   content: "relative z-20 text-xs",
 };
+
+// dropdown theme
+export const customDropdownTheme: CustomFlowbiteTheme["dropdown"] = {
+  content: "py-1 focus:outline-none overflow-y-auto max-h-[250px]",
+  floating: {
+    item: {
+      base: "text-left flex w-full cursor-pointer items-center justify-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:bg-gray-600 dark:focus:text-white",
+    },
+  },
+};
