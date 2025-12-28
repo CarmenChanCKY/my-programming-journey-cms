@@ -65,7 +65,10 @@ function SearchPostLayout(props: SearchPostLayoutInterface) {
       data.categoryID !== ""
     ) {
       result.categoryID = parseInt(
-        searchDropdownValueByText(data.categoryID, props.categoryItemList)
+        searchDropdownValueByText(
+          data.categoryID,
+          props.categoryItemList
+        ).toString()
       );
     }
 
@@ -79,7 +82,12 @@ function SearchPostLayout(props: SearchPostLayoutInterface) {
 
       for (let i = 0; i < splitTags.length; i++) {
         result.tagsIDList.push(
-          parseInt(searchDropdownValueByText(splitTags[i], props.tagsItemList))
+          parseInt(
+            searchDropdownValueByText(
+              splitTags[i],
+              props.tagsItemList
+            ).toString()
+          )
         );
       }
     }

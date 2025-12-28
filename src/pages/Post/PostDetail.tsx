@@ -6,14 +6,17 @@ import GridContainer from "@/components/ui/grid_system/GridContainer";
 import GridRow from "@/components/ui/grid_system/GridRow";
 import DatePickerField from "@/components/ui/form/DatepickerField";
 import { GlobalContext } from "@/context/GlobalContext";
-import { log } from "@/helper/common";
+import { dateToYMD, log, searchDropdownValueByText } from "@/helper/common";
 import { serverApi } from "@/helper/fetcher";
 import { useContext, useEffect, useRef, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import DropdownField, {
   DropdownItemListInterface,
 } from "@/components/ui/form/DropdownField";
+import IconButton from "@/components/ui/button/IconButton";
+import { addIcon, deleteIcon } from "@/components/ui/IconElement";
+import CustomButton from "@/components/ui/button/CustomButton";
 
 function PostDetail() {
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
@@ -36,7 +39,20 @@ function PostDetail() {
       "post-category": -1 as string | number,
       "post-tags": [] as Array<number> | string,
       "post-content": "",
+      "meta-keyword": "",
+      "meta-description": "",
+      references: [] as Array<Record<string, any>>,
     },
+  });
+
+  const { control } = postDetailForm;
+  const {
+    fields: referenceFields,
+    append: appendReference,
+    remove: removeReference,
+  } = useFieldArray({
+    control,
+    name: "references",
   });
 
   const abortControllerRef = useRef<Map<string, AbortController>>(new Map());
@@ -83,6 +99,18 @@ function PostDetail() {
       postDetailForm.setValue("post-date", new Date(result.post_data.date));
       postDetailForm.setValue("post-slug", result.post_data.slug);
       postDetailForm.setValue("post-content", result.post_data.content);
+      postDetailForm.setValue("meta-keyword", result.post_data.meta_keyword);
+      postDetailForm.setValue(
+        "meta-description",
+        result.post_data.meta_description
+      );
+
+      postDetailForm.setValue(
+        "references",
+        result.post_reference.map((obj: any) => {
+          return { "ref-name": obj.name, "ref-hyperlink": obj.hyperlink };
+        })
+      );
 
       postDetailForm.setValue("post-category", result.post_data.category_id);
 
@@ -166,12 +194,52 @@ function PostDetail() {
   }
 
   const onFormSubmit = (data: any) => {
-    // TODO:
-    // Convert Date back to string for API submission if needed
-    // const submitData = {
-    //   ...data,
-    //   "post-date": data["post-date"] ? dateToYMD(data["post-date"]) : "",
-    // };
+    console.log(data);
+
+    const submitData: {
+      title: string;
+      date: string;
+      slug: string;
+      category_id: number;
+      tags_id_list: Array<number>;
+      content: string;
+      "meta-keyword": string;
+      "meta-description": string;
+      references: Array<{ name: string; hyperlink: string }>;
+    } = {
+      title: data["post-title"],
+      date: data["post-date"] ? dateToYMD(data["post-date"]) : "",
+      slug: data["post-slug"].trim().replaceAll(" ", "-"),
+      category_id: -1,
+      tags_id_list: [],
+      content: data["post-content"],
+      "meta-keyword": data["meta-keyword"],
+      "meta-description": data["meta-description"],
+      references: [],
+    };
+
+    // search category id
+    submitData.category_id = parseInt(
+      searchDropdownValueByText(data["post-category"], categoryList).toString()
+    );
+
+    // search tags id
+    const splitTags = data["post-tags"].split(", ");
+    for (let i = 0; i < splitTags.length; i++) {
+      submitData.tags_id_list.push(
+        parseInt(searchDropdownValueByText(splitTags[i], tagsList).toString())
+      );
+    }
+
+    submitData.references = data["references"].map(
+      (obj: { "ref-name": string; "ref-hyperlink": string }) => {
+        return { name: obj["ref-name"], hyperlink: obj["ref-hyperlink"] };
+      }
+    );
+
+    console.log(submitData);
+
+    // TODO: save to backend
   };
 
   useEffect(() => {
@@ -179,8 +247,13 @@ function PostDetail() {
     updateAbortControllerRef("tag");
     updateAbortControllerRef("category");
 
-    setLoading(true);
-    getPost();
+    if (id !== undefined && id !== null && id != "") {
+      setLoading(true);
+      getPost();
+    } else {
+      getCategoryList();
+      getTagsList();
+    }
 
     return () => {
       // cancel the previous request
@@ -228,13 +301,13 @@ function PostDetail() {
 
   return (
     <>
-      <Card flat={true}>
-        <FormProvider {...postDetailForm}>
-          <form
-            onSubmit={postDetailForm.handleSubmit(onFormSubmit)}
-            noValidate
-            autoComplete="off"
-          >
+      <FormProvider {...postDetailForm}>
+        <form
+          onSubmit={postDetailForm.handleSubmit(onFormSubmit)}
+          noValidate
+          autoComplete="off"
+        >
+          <Card flat={true} className="mb-4">
             <GridContainer>
               <GridRow>
                 <GridColumn cols={12}>
@@ -246,14 +319,14 @@ function PostDetail() {
                   ></InputField>
                 </GridColumn>
 
-                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
                   <DatePickerField
                     name="post-date"
                     labelText="Post Date"
                   ></DatePickerField>
                 </GridColumn>
 
-                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
                   <InputField
                     id="post-slug"
                     name="post-slug"
@@ -262,7 +335,7 @@ function PostDetail() {
                   ></InputField>
                 </GridColumn>
 
-                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
                   <DropdownField
                     labelText="Category"
                     dropdownFieldID="post-category"
@@ -272,7 +345,7 @@ function PostDetail() {
                     required
                   ></DropdownField>
                 </GridColumn>
-                <GridColumn xl={6} lg={6} md={6} sm={6} xs={12} cols={12}>
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
                   <DropdownField
                     labelText="Tags"
                     dropdownFieldID="post-tags"
@@ -284,17 +357,98 @@ function PostDetail() {
                   ></DropdownField>
                 </GridColumn>
 
-                <GridColumn cols={12}>
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
+                  <InputField
+                    id="meta-keyword"
+                    name="meta-keyword"
+                    labelText="Meta Keyword"
+                  ></InputField>
+                </GridColumn>
+
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
+                  <InputField
+                    id="meta-description"
+                    name="meta-description"
+                    labelText="Meta Description"
+                  ></InputField>
+                </GridColumn>
+              </GridRow>
+
+              <GridRow>
+                <GridColumn cols={12} className="w-full">
                   <label className="pb-1">Post Content</label>
                   {pageInit && (
                     <TiptapEditor name="post-content"></TiptapEditor>
                   )}
                 </GridColumn>
               </GridRow>
+
+              <GridRow>
+                <GridColumn cols={12} className="flex justify-between">
+                  <label className="pb-1">Post Reference</label>
+                  <IconButton
+                    icon={addIcon}
+                    disabled={showLoading}
+                    onClick={() =>
+                      appendReference({
+                        "ref-name": "",
+                        "ref-hyperlink": "",
+                      })
+                    }
+                  ></IconButton>
+                </GridColumn>
+              </GridRow>
+
+              {referenceFields.map((field: any, index: any) => (
+                <GridRow key={field.id}>
+                  <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
+                    <InputField
+                      id={`ref-name-${index}`}
+                      name={`references.${index}.ref-name`}
+                      labelText="Reference Name"
+                      required={true}
+                    ></InputField>
+                  </GridColumn>
+
+                  <GridColumn
+                    xl={6}
+                    lg={6}
+                    md={6}
+                    sm={12}
+                    xs={12}
+                    cols={12}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="flex-1">
+                      <InputField
+                        id={`ref-hyperlink-${index}`}
+                        name={`references.${index}.ref-hyperlink`}
+                        labelText="Hyperlink"
+                        required={true}
+                      ></InputField>
+                    </div>
+
+                    <IconButton
+                      icon={deleteIcon}
+                      disabled={showLoading}
+                      color="error"
+                      plain
+                      onClick={() => removeReference(index)}
+                    ></IconButton>
+                  </GridColumn>
+                </GridRow>
+              ))}
             </GridContainer>
-          </form>
-        </FormProvider>
-      </Card>
+          </Card>
+
+          <CustomButton
+            type="submit"
+            text="Submit"
+            color="success"
+            loading={showLoading}
+          ></CustomButton>
+        </form>
+      </FormProvider>
     </>
   );
 }

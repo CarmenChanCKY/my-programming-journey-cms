@@ -49,7 +49,7 @@ function SearchFilterLayout(props: SearchFilterLayoutInterface) {
       data.filterField = searchDropdownValueByText(
         data.filterField,
         props.filterItemList
-      );
+      ).toString();
     }
 
     props.onSubmit(data);

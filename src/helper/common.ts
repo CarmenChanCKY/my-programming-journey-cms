@@ -39,7 +39,7 @@ const generateRandomString = (len: number): string => {
 const searchDropdownValueByText = (
   text: string,
   itemList: Array<DropdownItemListInterface>
-) => {
+): number | string => {
   const index = itemList.findIndex((obj) => {
     return obj.text === text;
   });
@@ -48,7 +48,7 @@ const searchDropdownValueByText = (
     return itemList[index].value;
   }
 
-  return "";
+  return -1;
 };
 
 const dateToYMD = (date: Date) => {
