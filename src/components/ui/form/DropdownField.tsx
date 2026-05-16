@@ -91,11 +91,15 @@ function DropdownField(props: DropdownFieldInterface) {
     e.stopPropagation();
 
     if (props.multiple) {
-      const currentFieldValue = field.value
-        .split(", ")
-        .filter((value: string) => {
-          return value !== undefined && value !== null && value !== "";
-        });
+      console.log(field.value)
+      // Handle both array and string values
+      const valueArray = Array.isArray(field.value)
+        ? field.value.map((v: any) => String(v))
+        : (typeof field.value === "string" ? field.value.split(", ") : []);
+
+      const currentFieldValue = valueArray.filter((value: string) => {
+        return value !== undefined && value !== null && value !== "";
+      });
 
       let newValues = [...currentFieldValue];
       const newSet = new Set(activeIndexList);

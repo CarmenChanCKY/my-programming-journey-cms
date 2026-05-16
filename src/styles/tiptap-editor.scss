@@ -42,6 +42,14 @@
 
     & hr {
       border-color: #d7d7d7;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    & .post-img {
+      display: block;
+      max-width: 80%;
+      margin: 10px auto;
     }
 
     & .inline-code {
@@ -88,7 +96,8 @@
         background-color: #cfd9e8;
 
         & > .callout-prefix {
-          filter: invert(46%) sepia(9%) saturate(2278%) hue-rotate(172deg) brightness(95%) contrast(83%);
+          filter: invert(46%) sepia(9%) saturate(2278%) hue-rotate(172deg)
+            brightness(95%) contrast(83%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -98,7 +107,8 @@
         background-color: #e8eff6;
 
         & > .callout-prefix {
-          filter: invert(64%) sepia(18%) saturate(788%) hue-rotate(157deg) brightness(93%) contrast(97%);
+          filter: invert(64%) sepia(18%) saturate(788%) hue-rotate(157deg)
+            brightness(93%) contrast(97%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -108,7 +118,8 @@
         background-color: #fbe8d9;
 
         & > .callout-prefix {
-          filter: invert(73%) sepia(36%) saturate(4728%) hue-rotate(327deg) brightness(98%) contrast(86%);
+          filter: invert(73%) sepia(36%) saturate(4728%) hue-rotate(327deg)
+            brightness(98%) contrast(86%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -118,7 +129,8 @@
         background-color: #e3f5e3;
 
         & > .callout-prefix {
-          filter: invert(73%) sepia(12%) saturate(1545%) hue-rotate(72deg) brightness(90%) contrast(88%);
+          filter: invert(73%) sepia(12%) saturate(1545%) hue-rotate(72deg)
+            brightness(90%) contrast(88%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -128,13 +140,14 @@
         background-color: #ffe1e1;
 
         & > .callout-prefix {
-          filter: invert(47%) sepia(67%) saturate(4201%) hue-rotate(332deg) brightness(112%) contrast(108%);
+          filter: invert(47%) sepia(67%) saturate(4201%) hue-rotate(332deg)
+            brightness(112%) contrast(108%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
     }
 
-    & .post-table {
+    & .tableWrapper table {
       border-collapse: collapse;
       display: block;
       max-width: -moz-fit-content;

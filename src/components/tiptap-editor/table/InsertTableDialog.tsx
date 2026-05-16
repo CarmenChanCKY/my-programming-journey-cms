@@ -125,8 +125,9 @@ function InsertTableDialog(props: InsertTableDialogInterface) {
                 <CustomButton
                   className="mt-6"
                   text="Confirm"
-                  type="submit"
+                  type="button"
                   disabled={props.showLoading}
+                  onClick={() => insertTableForm.handleSubmit(onInsertTableFormSubmit)()}
                 ></CustomButton>
               </GridColumn>
             </GridRow>

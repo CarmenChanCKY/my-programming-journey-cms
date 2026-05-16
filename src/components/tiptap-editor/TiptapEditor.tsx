@@ -11,7 +11,8 @@ import Code from "@tiptap/extension-code";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
-import { TableKit } from "@tiptap/extension-table";
+import { TableHeader, TableRow, TableCell } from "@tiptap/extension-table";
+import CustomTable from "@/components/tiptap-editor/table/CustomTable";
 import CodeBlockPrism from "./prism-plugin";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
 import Callout from "./callout-plugin";
@@ -79,11 +80,22 @@ const extensions = [
     },
   }),
   Callout,
-  ImageExtension,
-  ImageAligner,
-  TableKit.configure({
-    table: { HTMLAttributes: { class: "post-table" }, resizable: false },
+  ImageExtension.configure({
+    inline: true,
+    HTMLAttributes: {
+      class: "post-img",
+    },
   }),
+  ImageAligner,
+  CustomTable.configure({
+    HTMLAttributes: {
+      class: "post-table",
+    },
+    resizable: false,
+  }),
+  TableHeader,
+  TableRow,
+  TableCell,
 ];
 
 function TiptapEditor(props: EditorInterface) {

@@ -21,7 +21,6 @@ interface CustomDropdownButtonType {
   loading?: boolean;
 }
 
-// TODO: dropdown太長
 const CustomDropdownButton = forwardRef(
   (props: CustomDropdownButtonType, ref: any) => {
     return (

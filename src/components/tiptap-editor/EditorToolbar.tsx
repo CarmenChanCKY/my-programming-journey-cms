@@ -748,7 +748,7 @@ function EditorToolbar() {
     <ImageAligner.Root editor={editor}>
       <ImageAligner.AlignMenu>
         <ImageAligner.Items className="bg-white flex items-center border rounded p-2">
-          <ImageAligner.Item alignment="left">
+          <ImageAligner.Item alignment="left" type="button">
             <span
               className="inline-flex items-center justify-center p-1 rounded text-stone-600 hover:bg-gray-100"
               aria-hidden="true"
@@ -756,7 +756,7 @@ function EditorToolbar() {
               <MdFormatAlignLeft size={18} />
             </span>
           </ImageAligner.Item>
-          <ImageAligner.Item alignment="center">
+          <ImageAligner.Item alignment="center" type="button">
             <span
               className="inline-flex items-center justify-center p-1 rounded text-stone-600 hover:bg-gray-100"
               aria-hidden="true"
@@ -764,7 +764,7 @@ function EditorToolbar() {
               <MdFormatAlignCenter size={18} />
             </span>
           </ImageAligner.Item>
-          <ImageAligner.Item alignment="right">
+          <ImageAligner.Item alignment="right" type="button">
             <span
               className="inline-flex items-center justify-center p-1 rounded text-stone-600 hover:bg-gray-100"
               aria-hidden="true"

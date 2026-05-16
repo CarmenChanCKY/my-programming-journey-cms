@@ -17,6 +17,7 @@ import DropdownField, {
 import IconButton from "@/components/ui/button/IconButton";
 import { addIcon, deleteIcon } from "@/components/ui/IconElement";
 import CustomButton from "@/components/ui/button/CustomButton";
+import { generateRoutePath } from "@/router/route";
 
 function PostDetail() {
   const { showLoading, setLoading, toastDispatch } = useContext(GlobalContext);
@@ -125,11 +126,24 @@ function PostDetail() {
       getTagsList();
 
       setPageInit(true);
+      setLoading(false);
     } catch (error) {
       log("--- Get Post data error ---");
       log(error);
-    } finally {
-      setLoading(false);
+
+      if (error !== undefined && error !== null && error !== "canceled") {
+        toastDispatch({
+          actionType: "insert",
+          text: `Post not found`,
+          type: "error",
+          onToastDismiss: () => {
+            setLoading(false);
+            navigate(generateRoutePath("/post"));
+          },
+        });
+      } else {
+        setLoading(false);
+      }
     }
   }
 
@@ -193,54 +207,104 @@ function PostDetail() {
     }
   }
 
-  const onFormSubmit = (data: any) => {
-    console.log(data);
+  async function onFormSubmit(data: any) {
+    if (!showLoading) {
+      const submitData: {
+        id?: number;
+        title: string;
+        date: string;
+        slug: string;
+        category_id: number;
+        tags_id_list: Array<number>;
+        content: string;
+        meta_keyword: string;
+        meta_description: string;
+        reference: Array<{ name: string; hyperlink: string }>;
+      } = {
+        title: data["post-title"],
+        date: data["post-date"] ? dateToYMD(data["post-date"]) : "",
+        slug: data["post-slug"].trim().replaceAll(" ", "-"),
+        category_id: -1,
+        tags_id_list: [],
+        content: data["post-content"],
+        meta_keyword: data["meta-keyword"],
+        meta_description: data["meta-description"],
+        reference: [],
+      };
 
-    const submitData: {
-      title: string;
-      date: string;
-      slug: string;
-      category_id: number;
-      tags_id_list: Array<number>;
-      content: string;
-      "meta-keyword": string;
-      "meta-description": string;
-      references: Array<{ name: string; hyperlink: string }>;
-    } = {
-      title: data["post-title"],
-      date: data["post-date"] ? dateToYMD(data["post-date"]) : "",
-      slug: data["post-slug"].trim().replaceAll(" ", "-"),
-      category_id: -1,
-      tags_id_list: [],
-      content: data["post-content"],
-      "meta-keyword": data["meta-keyword"],
-      "meta-description": data["meta-description"],
-      references: [],
-    };
-
-    // search category id
-    submitData.category_id = parseInt(
-      searchDropdownValueByText(data["post-category"], categoryList).toString()
-    );
-
-    // search tags id
-    const splitTags = data["post-tags"].split(", ");
-    for (let i = 0; i < splitTags.length; i++) {
-      submitData.tags_id_list.push(
-        parseInt(searchDropdownValueByText(splitTags[i], tagsList).toString())
+      // search category id
+      submitData.category_id = parseInt(
+        searchDropdownValueByText(
+          data["post-category"],
+          categoryList
+        ).toString()
       );
-    }
 
-    submitData.references = data["references"].map(
-      (obj: { "ref-name": string; "ref-hyperlink": string }) => {
-        return { name: obj["ref-name"], hyperlink: obj["ref-hyperlink"] };
+      // search tags id
+      const splitTags = data["post-tags"].split(", ");
+      for (let i = 0; i < splitTags.length; i++) {
+        submitData.tags_id_list.push(
+          parseInt(searchDropdownValueByText(splitTags[i], tagsList).toString())
+        );
       }
-    );
 
-    console.log(submitData);
+      submitData.reference = data["references"].map(
+        (obj: { "ref-name": string; "ref-hyperlink": string }) => {
+          return { name: obj["ref-name"], hyperlink: obj["ref-hyperlink"] };
+        }
+      );
 
-    // TODO: save to backend
-  };
+      log("--- Submit Data ---");
+      log(submitData);
+
+      setLoading(true);
+
+      let path = "";
+
+      if (id !== undefined && id !== null && id != "") {
+        path = "/post/update";
+        submitData.id = parseInt(id, 10);
+      } else {
+        path = "/post/add";
+      }
+
+      try {
+        const result: any = await serverApi(path, "post", {}, submitData);
+
+        log("--- Submit Post result ---");
+        log(result);
+
+        toastDispatch({
+          actionType: "insert",
+          text: `Update Success`,
+          type: "success",
+          onToastDismiss: () => {
+            setLoading(false);
+            navigate(generateRoutePath("/post"));
+          },
+        });
+      } catch (error: any) {
+        log("--- Submit Post error ---");
+        log(error);
+
+        toastDispatch({
+          actionType: "insert",
+          text: `Update fail: ${error.description}`,
+          type: "error",
+          onToastDismiss: () => {
+            setLoading(false);
+          },
+        });
+      }
+    }
+    // TODO: add post function
+
+    // TODO: reupload the image start from this post
+    // http://localhost:3000/post/get-the-item-list-from-localstorage-or-sessionstorage-in-javascript/
+
+    // TODO: add hide post function
+    // TODO: add preview post function
+  }
 
   useEffect(() => {
     updateAbortControllerRef("post");
@@ -253,6 +317,8 @@ function PostDetail() {
     } else {
       getCategoryList();
       getTagsList();
+      setPageInit(true);
+      setLoading(false);
     }
 
     return () => {
