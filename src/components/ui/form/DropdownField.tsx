@@ -91,7 +91,6 @@ function DropdownField(props: DropdownFieldInterface) {
     e.stopPropagation();
 
     if (props.multiple) {
-      console.log(field.value)
       // Handle both array and string values
       const valueArray = Array.isArray(field.value)
         ? field.value.map((v: any) => String(v))

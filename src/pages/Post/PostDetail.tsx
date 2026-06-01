@@ -297,10 +297,6 @@ function PostDetail() {
         });
       }
     }
-    // TODO: add post function
-
-    // TODO: reupload the image start from this post
-    // http://localhost:3000/post/get-the-item-list-from-localstorage-or-sessionstorage-in-javascript/
 
     // TODO: add hide post function
     // TODO: add preview post function
