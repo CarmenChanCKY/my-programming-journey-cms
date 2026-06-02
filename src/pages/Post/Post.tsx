@@ -22,6 +22,7 @@ import { Link, useNavigate } from "react-router";
 const header: Array<TableHeaderType> = [
   { key: "id", child: "ID" },
   { key: "date", child: "Date" },
+  { key: "hide_post", child: "Hidden" },
   {
     key: "title",
     child: "Title",
@@ -65,7 +66,7 @@ function Post() {
     Array<DropdownItemListInterface>
   >([]);
   const [tagsList, setTagsList] = useState<Array<DropdownItemListInterface>>(
-    []
+    [],
   );
   const [saveSearchFormValue, updateSearchFormValue] =
     useState<PostSearchResultInterface | null>(null);
@@ -126,7 +127,7 @@ function Post() {
   // for abort controller
   function updateAbortControllerRef(
     key: "post" | "tag" | "category",
-    reset: boolean = true
+    reset: boolean = true,
   ) {
     if (
       abortControllerRef.current !== null &&
@@ -148,7 +149,7 @@ function Post() {
   // db function
   async function getPostList(
     page: number,
-    searchFilterFormValue: PostSearchResultInterface | null
+    searchFilterFormValue: PostSearchResultInterface | null,
   ) {
     setTableLoading(true);
     setData([]);
@@ -178,7 +179,7 @@ function Post() {
         "get",
         payload,
         {},
-        getAbortController("post")
+        getAbortController("post"),
       );
 
       log("--- Get Post List ---");
@@ -196,6 +197,7 @@ function Post() {
               title: obj.title,
               category: obj.category_name,
               tags: obj.tags_data.join(", "),
+              hide_post: obj.hide_post === 0 ? "No" : "Yes",
               actionEditDelete: EditDeleteButton({
                 editCallback: () => {
                   navigate(generateRoutePath(`/post/detail/${obj.id}`));
@@ -205,7 +207,7 @@ function Post() {
                 },
               }),
             };
-          })
+          }),
         );
         setTotalItems(result.total);
       }
@@ -229,7 +231,7 @@ function Post() {
         "get",
         {},
         {},
-        getAbortController("category")
+        getAbortController("category"),
       );
 
       log("--- Get Filter Category List ---");
@@ -241,7 +243,7 @@ function Post() {
         setCategoryList(
           result.data.map((obj: any) => {
             return { text: obj.name, value: obj.id };
-          })
+          }),
         );
       }
     } catch (error: any) {
@@ -259,7 +261,7 @@ function Post() {
         "get",
         {},
         {},
-        getAbortController("tag")
+        getAbortController("tag"),
       );
 
       log("--- Get Filter Tag List ---");
@@ -271,7 +273,7 @@ function Post() {
         setTagsList(
           result.data.map((obj: any) => {
             return { text: obj.name, value: obj.id };
-          })
+          }),
         );
       }
     } catch (error: any) {

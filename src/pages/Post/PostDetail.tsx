@@ -28,8 +28,12 @@ function PostDetail() {
     Array<DropdownItemListInterface>
   >([]);
   const [tagsList, setTagsList] = useState<Array<DropdownItemListInterface>>(
-    []
+    [],
   );
+  const [hidePostList] = useState<Array<DropdownItemListInterface>>([
+    { text: "Yes", value: "1" },
+    { text: "No", value: "0" },
+  ]);
 
   const postDetailForm = useForm({
     mode: "onSubmit",
@@ -42,6 +46,7 @@ function PostDetail() {
       "post-content": "",
       "meta-keyword": "",
       "meta-description": "",
+      "hide-post": "",
       references: [] as Array<Record<string, any>>,
     },
   });
@@ -61,7 +66,7 @@ function PostDetail() {
   // for abort controller
   function updateAbortControllerRef(
     key: "post" | "tag" | "category",
-    reset: boolean = true
+    reset: boolean = true,
   ) {
     if (
       abortControllerRef.current !== null &&
@@ -90,7 +95,7 @@ function PostDetail() {
         "get",
         payload,
         {},
-        getAbortController("post")
+        getAbortController("post"),
       );
 
       log("--- Get Post data ---");
@@ -102,15 +107,19 @@ function PostDetail() {
       postDetailForm.setValue("post-content", result.post_data.content);
       postDetailForm.setValue("meta-keyword", result.post_data.meta_keyword);
       postDetailForm.setValue(
+        "hide-post",
+        result.post_data.hide_post === 0 ? "No" : "Yes",
+      );
+      postDetailForm.setValue(
         "meta-description",
-        result.post_data.meta_description
+        result.post_data.meta_description,
       );
 
       postDetailForm.setValue(
         "references",
         result.post_reference.map((obj: any) => {
           return { "ref-name": obj.name, "ref-hyperlink": obj.hyperlink };
-        })
+        }),
       );
 
       postDetailForm.setValue("post-category", result.post_data.category_id);
@@ -119,7 +128,7 @@ function PostDetail() {
         "post-tags",
         result.tags_data.map((obj: any) => {
           return obj.tags_id;
-        })
+        }),
       );
 
       getCategoryList();
@@ -154,7 +163,7 @@ function PostDetail() {
         "get",
         {},
         {},
-        getAbortController("category")
+        getAbortController("category"),
       );
 
       log("--- Get Category data ---");
@@ -166,7 +175,7 @@ function PostDetail() {
         setCategoryList(
           result.data.map((obj: any) => {
             return { text: obj.name, value: obj.id };
-          })
+          }),
         );
       }
     } catch (error) {
@@ -184,7 +193,7 @@ function PostDetail() {
         "get",
         {},
         {},
-        getAbortController("tag")
+        getAbortController("tag"),
       );
 
       log("--- Get Tags data ---");
@@ -196,7 +205,7 @@ function PostDetail() {
         setTagsList(
           result.data.map((obj: any) => {
             return { text: obj.name, value: obj.id };
-          })
+          }),
         );
       }
     } catch (error) {
@@ -219,6 +228,7 @@ function PostDetail() {
         content: string;
         meta_keyword: string;
         meta_description: string;
+        hide_post: number;
         reference: Array<{ name: string; hyperlink: string }>;
       } = {
         title: data["post-title"],
@@ -229,29 +239,37 @@ function PostDetail() {
         content: data["post-content"],
         meta_keyword: data["meta-keyword"],
         meta_description: data["meta-description"],
+        hide_post: 0,
         reference: [],
       };
+
+      // search hide post status
+      submitData.hide_post = parseInt(
+        searchDropdownValueByText(data["hide-post"], hidePostList).toString(),
+      );
 
       // search category id
       submitData.category_id = parseInt(
         searchDropdownValueByText(
           data["post-category"],
-          categoryList
-        ).toString()
+          categoryList,
+        ).toString(),
       );
 
       // search tags id
       const splitTags = data["post-tags"].split(", ");
       for (let i = 0; i < splitTags.length; i++) {
         submitData.tags_id_list.push(
-          parseInt(searchDropdownValueByText(splitTags[i], tagsList).toString())
+          parseInt(
+            searchDropdownValueByText(splitTags[i], tagsList).toString(),
+          ),
         );
       }
 
       submitData.reference = data["references"].map(
         (obj: { "ref-name": string; "ref-hyperlink": string }) => {
           return { name: obj["ref-name"], hyperlink: obj["ref-hyperlink"] };
-        }
+        },
       );
 
       log("--- Submit Data ---");
@@ -297,8 +315,6 @@ function PostDetail() {
         });
       }
     }
-
-    // TODO: add hide post function
     // TODO: add preview post function
   }
 
@@ -331,13 +347,13 @@ function PostDetail() {
     const categoryIndex = categoryList.findIndex(
       (obj: DropdownItemListInterface) => {
         return parseInt(obj.value) === categoryID;
-      }
+      },
     );
 
     if (categoryIndex !== -1) {
       postDetailForm.setValue(
         "post-category",
-        categoryList[categoryIndex].text
+        categoryList[categoryIndex].text,
       );
     }
   }, [categoryList]);
@@ -356,7 +372,7 @@ function PostDetail() {
           .map((obj: DropdownItemListInterface) => {
             return obj.text;
           })
-          .join(", ")
+          .join(", "),
       );
     }
   }, [tagsList]);
@@ -433,6 +449,17 @@ function PostDetail() {
                     name="meta-description"
                     labelText="Meta Description"
                   ></InputField>
+                </GridColumn>
+
+                <GridColumn xl={6} lg={6} md={6} sm={12} xs={12} cols={12}>
+                  <DropdownField
+                    labelText="Hidden"
+                    dropdownFieldID="hide-post"
+                    dropdownListID="hide-post-list"
+                    name="hide-post"
+                    itemList={hidePostList}
+                    required
+                  ></DropdownField>
                 </GridColumn>
               </GridRow>
 
