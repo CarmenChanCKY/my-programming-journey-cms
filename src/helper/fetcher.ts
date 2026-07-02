@@ -1,50 +1,47 @@
-import { signIn, signOut } from "supertokens-web-js/recipe/emailpassword";
+import { authClient } from "@/lib/auth-client";
 import { log, errorLog } from "./common";
 import axios, { AxiosRequestConfig, GenericAbortSignal } from "axios";
+import { router, generateRoutePath } from "@/router/route";
 
-const baseURL = "http://localhost:3100/cms";
+const baseURL = `${import.meta.env.VITE_API_URL ?? "http://localhost:3100"}/cms`;
+
+axios.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      router.navigate(generateRoutePath("/login", false), { replace: true });
+    }
+    return Promise.reject(error);
+  }
+);
 
 async function cmsSignIn(email: string, password: string) {
   try {
-    const loginResult = await signIn({
-      formFields: [
-        {
-          id: "email",
-          value: email,
-        },
-        {
-          id: "password",
-          value: password,
-        },
-      ],
+    const result = await authClient.signIn.email({
+      email,
+      password,
     });
 
     log("--- login result ---");
-    log(loginResult);
+    log(result);
 
-    if (
-      loginResult.status === "FIELD_ERROR" ||
-      loginResult.status === "WRONG_CREDENTIALS_ERROR"
-    ) {
-      return Promise.reject("incorrect email or password");
-    } else if (loginResult.status === "SIGN_IN_NOT_ALLOWED") {
-      return Promise.reject("sign in not allowed");
-    } else {
-      return Promise.resolve("success");
+    if (result.error) {
+      return { data: null, error: "incorrect email or password" };
     }
+
+    return { data: result.data, error: null };
   } catch (error: any) {
     log("--- login error ---");
     log(error);
 
-    return Promise.reject("something went wrong");
+    return { data: null, error: "something went wrong" };
   }
 }
 
 async function cmsSignout() {
-  await signOut();
+  await authClient.signOut();
 }
 
-// fetch server data with specific method
 async function serverApi(
   path: string,
   method: string = "get",
@@ -56,6 +53,7 @@ async function serverApi(
     const config: AxiosRequestConfig = {
       method: method,
       url: `${baseURL}${path}`,
+      withCredentials: true,
     };
 
     if (Object.keys(params ?? {}).length > 0) {

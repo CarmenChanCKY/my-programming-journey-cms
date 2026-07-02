@@ -38,21 +38,12 @@ function Login() {
     log(data);
     if (!showLoading) {
       setLoading(true);
-      try {
-        const result = await cmsSignIn(data.email, data.password);
-        log("--- Sign In Result ---");
-        log(result);
-        setLoading(false);
+      const { error } = await cmsSignIn(data.email, data.password);
+      setLoading(false);
+      if (error) {
+        toastDispatch({ actionType: "insert", text: error, type: "error" });
+      } else {
         navigate(generateRoutePath("/post"), { replace: true });
-      } catch (error: any) {
-        log("--- Sign In Error ---");
-        log(error);
-        toastDispatch({
-          actionType: "insert",
-          text: "Incorrect Email or Password",
-          type: "error",
-        });
-        setLoading(false);
       }
     }
   };

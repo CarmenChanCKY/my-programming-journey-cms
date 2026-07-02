@@ -5,7 +5,7 @@ import {
 } from "@/router/route";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import SessionWebJs from "supertokens-web-js/recipe/session";
+import { authClient } from "@/lib/auth-client";
 
 function Blank() {
   const [allowRoute, setAllowRoute] = useState(false);
@@ -17,9 +17,10 @@ function Blank() {
     const currentPath = location.pathname;
     const routerPathAfterLogin = routePathAfterLogin();
 
-    SessionWebJs.doesSessionExist()
-      .then((isLogin: boolean) => {
-        if (isLogin) {
+    authClient
+      .getSession()
+      .then((session) => {
+        if (session.data) {
           // user has been login
           // redirect to the first path of routePathAfterLogin
           navigate(routerPathAfterLogin[0].path, { replace: true });

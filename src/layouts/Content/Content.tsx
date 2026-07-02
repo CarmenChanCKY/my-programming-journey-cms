@@ -2,7 +2,7 @@ import CustomDrawer from "@/components/ui/CustomDrawer";
 import { routePathAfterLogin, generateRoutePath } from "@/router/route";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
-import SessionWebJs from "supertokens-web-js/recipe/session";
+import { authClient } from "@/lib/auth-client";
 
 function Content() {
   const [allowRoute, setAllowRoute] = useState(false);
@@ -14,9 +14,10 @@ function Content() {
     const currentPath = location.pathname;
     const routerPathAfterLogin = routePathAfterLogin();
 
-    SessionWebJs.doesSessionExist()
-      .then((isLogin: boolean) => {
-        if (isLogin) {
+    authClient
+      .getSession()
+      .then((session) => {
+        if (session.data) {
           // user has been login
           const index = routerPathAfterLogin.findIndex((item) => {
             return new RegExp(item.regex).test(currentPath);
