@@ -3,8 +3,7 @@ import { log, errorLog } from "./common";
 import axios, { AxiosRequestConfig, GenericAbortSignal } from "axios";
 import { router, generateRoutePath } from "@/router/route";
 
-const baseURL = `${import.meta.env.VITE_API_URL ?? "http://localhost:3100"}/cms`;
-
+const baseURL = "/api-prod/cms";
 axios.interceptors.response.use(
   (res) => res,
   (error) => {
@@ -12,7 +11,7 @@ axios.interceptors.response.use(
       router.navigate(generateRoutePath("/login", false), { replace: true });
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 async function cmsSignIn(email: string, password: string) {
@@ -47,7 +46,7 @@ async function serverApi(
   method: string = "get",
   params?: { [key: string]: any },
   formData?: { [key: string]: any },
-  cancelSignal?: GenericAbortSignal
+  cancelSignal?: GenericAbortSignal,
 ) {
   return new Promise((resolve, reject) => {
     const config: AxiosRequestConfig = {
