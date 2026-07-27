@@ -4,6 +4,8 @@ A Content Management System (CMS) admin panel for managing blog posts, categorie
 
 Frontend: https://github.com/CarmenChanCKY/my-programming-journey
 
+Backend: https://github.com/CarmenChanCKY/my-programming-journey-backend
+
 ## Tech Stack
 
 | Category | Technology |
