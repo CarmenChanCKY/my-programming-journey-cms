@@ -1,50 +1,96 @@
-# React + TypeScript + Vite
+# my-programming-journey-cms
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Content Management System (CMS) admin panel for managing blog posts, categories, and tags for a personal programming blog.
 
-Currently, two official plugins are available:
+Frontend: https://github.com/CarmenChanCKY/my-programming-journey
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## Expanding the ESLint configuration
+| Category | Technology |
+|----------|-----------|
+| Framework | React 18, TypeScript ~5.6 |
+| Build Tool | Vite 5.4 |
+| Styling | Tailwind CSS 3.4, SCSS/Sass |
+| UI Library | Flowbite React 0.10 |
+| Rich Text Editor | Tiptap 2.11+ |
+| Authentication | Better Auth 1.6 |
+| Routing | React Router 7.6 |
+| Forms | React Hook Form 7.53 |
+| HTTP Client | Axios 1.7 |
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Features
 
-- Configure the top-level `parserOptions` property like this:
+- **Authentication** — Email/password login with HTTP-only cookie-based sessions
+- **Post Management** — Full CRUD with paginated lists, search, and filtering by category/tags
+- **Rich Text Editor** — WYSIWYG editor with:
+  - Text formatting (bold, italic, underline, strikethrough, color, highlight)
+  - Headings (H1–H6), text alignment, lists, blockquotes
+  - Code blocks with PrismJS syntax highlighting
+  - Image upload and alignment
+  - Tables with merge/split cell support
+  - YouTube video embeds
+  - Callout blocks (custom plugin)
+  - Undo/Redo
+- **Category Management** — CRUD with duplicate detection
+- **Tag Management** — CRUD with duplicate detection
+- **Responsive Design** — Custom breakpoints for xs, sm, md, lg, xl
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Prerequisites
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **Node.js v20.11.1** (use `nvm use` to switch to the correct version)
+- **npm** (comes with Node)
+- A running backend API server (Express v5) at the configured `VITE_API_URL`
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Getting Started
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd my-programming-journey-cms
+   ```
+
+2. **Switch to the correct Node version**
+
+   ```bash
+   nvm use
+   ```
+
+3. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+4. **Configure environment variables**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Edit `.env.local` and set the required values (see [Environment Variables](#environment-variables)).
+
+5. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   The app will be available at `http://localhost:5173`.
+
+## Environment Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_URL` | Base URL of the backend API server | `http://localhost:3100` |
+| `VITE_AUTH_BASE_PATH` | Base path for Better Auth endpoints | `/admin` |
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the Vite development server (default mode) |
+| `npm run dev-prod-path` | Start dev server using `.env.prodpath` environment |
+| `npm run build` | Build the app for production |
+| `npm run lint` | Run ESLint on the project |
+| `npm run preview` | Preview the production build locally |

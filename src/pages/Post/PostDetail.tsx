@@ -315,7 +315,7 @@ function PostDetail() {
         });
       }
     }
-    // TODO: add preview post function
+
   }
 
   useEffect(() => {
