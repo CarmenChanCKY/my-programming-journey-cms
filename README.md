@@ -11,14 +11,14 @@ Backend: https://github.com/CarmenChanCKY/my-programming-journey-backend
 | Category | Technology |
 |----------|-----------|
 | Framework | React 18, TypeScript ~5.6 |
-| Build Tool | Vite 5.4 |
+| Build Tool | Vite 8.2 |
 | Styling | Tailwind CSS 3.4, SCSS/Sass |
 | UI Library | Flowbite React 0.10 |
 | Rich Text Editor | Tiptap 2.11+ |
 | Authentication | Better Auth 1.6 |
-| Routing | React Router 7.6 |
+| Routing | React Router 7.18 |
 | Forms | React Hook Form 7.53 |
-| HTTP Client | Axios 1.7 |
+| HTTP Client | Axios 1.18 |
 
 ## Features
 
