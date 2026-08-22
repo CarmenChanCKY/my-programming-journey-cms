@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+
+    groups:
+    # group the patch and minor update to a pull request named "safe-security-patches"
+      safe-security-patches:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
