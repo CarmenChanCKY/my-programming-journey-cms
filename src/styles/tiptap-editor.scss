@@ -74,6 +74,44 @@
       font-size: 0.889rem !important;
     }
 
+    /* for code block caption (Notion/Medium style) */
+    & .codeblock-figure {
+      margin: 0.5em 0;
+
+      & > pre {
+        margin-bottom: 0;
+      }
+
+      &.ProseMirror-selectednode > pre {
+        outline: 2px solid #a8c7fa;
+        outline-offset: 2px;
+      }
+    }
+
+    & .codeblock-caption-wrap {
+      margin-top: 0.4rem;
+    }
+
+    & .codeblock-caption-input {
+      width: 100%;
+      text-align: left;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: rgba(0, 0, 0, 0.55);
+      background: transparent;
+      border: 0;
+      outline: none;
+      padding: 2px 8px;
+
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.35);
+      }
+
+      &:focus {
+        color: rgba(0, 0, 0, 0.8);
+      }
+    }
+
     /* for callout */
     & .post-callout {
       display: flex;
@@ -96,8 +134,7 @@
         background-color: #cfd9e8;
 
         & > .callout-prefix {
-          filter: invert(46%) sepia(9%) saturate(2278%) hue-rotate(172deg)
-            brightness(95%) contrast(83%);
+          filter: invert(46%) sepia(9%) saturate(2278%) hue-rotate(172deg) brightness(95%) contrast(83%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -107,8 +144,7 @@
         background-color: #e8eff6;
 
         & > .callout-prefix {
-          filter: invert(64%) sepia(18%) saturate(788%) hue-rotate(157deg)
-            brightness(93%) contrast(97%);
+          filter: invert(64%) sepia(18%) saturate(788%) hue-rotate(157deg) brightness(93%) contrast(97%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -118,8 +154,7 @@
         background-color: #fbe8d9;
 
         & > .callout-prefix {
-          filter: invert(73%) sepia(36%) saturate(4728%) hue-rotate(327deg)
-            brightness(98%) contrast(86%);
+          filter: invert(73%) sepia(36%) saturate(4728%) hue-rotate(327deg) brightness(98%) contrast(86%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -129,8 +164,7 @@
         background-color: #e3f5e3;
 
         & > .callout-prefix {
-          filter: invert(73%) sepia(12%) saturate(1545%) hue-rotate(72deg)
-            brightness(90%) contrast(88%);
+          filter: invert(73%) sepia(12%) saturate(1545%) hue-rotate(72deg) brightness(90%) contrast(88%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }
@@ -140,8 +174,7 @@
         background-color: #ffe1e1;
 
         & > .callout-prefix {
-          filter: invert(47%) sepia(67%) saturate(4201%) hue-rotate(332deg)
-            brightness(112%) contrast(108%);
+          filter: invert(47%) sepia(67%) saturate(4201%) hue-rotate(332deg) brightness(112%) contrast(108%);
           background-image: url("/src/assets/alert-circle-outline.svg");
         }
       }

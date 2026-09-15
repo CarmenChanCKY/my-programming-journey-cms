@@ -31,5 +31,7 @@ import "prismjs/components/prism-scss";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-swift";
 import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-yaml";
+import "prismjs/components/prism-lua";
 
 export default Prism;

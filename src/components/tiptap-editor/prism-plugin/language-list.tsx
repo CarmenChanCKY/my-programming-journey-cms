@@ -78,6 +78,10 @@ const prismLanguageList: Array<DropdownItemListInterface> = [
     value: "kotlin",
   },
   {
+    text: "Lua",
+    value: "lua",
+  },
+  {
     text: "Markdown",
     value: "markdown",
   },
@@ -128,6 +132,10 @@ const prismLanguageList: Array<DropdownItemListInterface> = [
   {
     text: "TypeScript",
     value: "typescript",
+  },
+  {
+    text: "YAML",
+    value: "yaml",
   },
 ];
 

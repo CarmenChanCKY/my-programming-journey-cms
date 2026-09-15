@@ -378,7 +378,7 @@ function EditorToolbar() {
           setColorPickerType("textColor");
           setOpenColorPicker(true);
           setColorPickerColor(
-            editor.getAttributes("textStyle").color ?? "#000000"
+            editor.getAttributes("textStyle").color ?? "#000000",
           );
         },
       },
@@ -393,7 +393,7 @@ function EditorToolbar() {
           setColorPickerType("highlight");
           setOpenColorPicker(true);
           setColorPickerColor(
-            editor.getAttributes("highlight").color ?? "#000000"
+            editor.getAttributes("highlight").color ?? "#000000",
           );
         },
       },
@@ -422,11 +422,21 @@ function EditorToolbar() {
             text: obj.text,
             selected: activeCodeLang === obj.value,
             onClick: () => {
-              editor
-                .chain()
-                .focus()
-                .toggleCodeBlock({ language: obj.value })
-                .run();
+              // Preserve caption: only toggle when creating a new code block,
+              // otherwise just update the language attribute.
+              if (editor.isActive("codeBlock")) {
+                editor
+                  .chain()
+                  .focus()
+                  .updateAttributes("codeBlock", { language: obj.value })
+                  .run();
+              } else {
+                editor
+                  .chain()
+                  .focus()
+                  .toggleCodeBlock({ language: obj.value })
+                  .run();
+              }
             },
           };
         }),
@@ -642,7 +652,7 @@ function EditorToolbar() {
 
   const onColorPickerUpdated = (
     type: "update" | "clear" | "close",
-    color?: string
+    color?: string,
   ) => {
     if (type === "update") {
       if (colorPickerType === "textColor") {
@@ -673,7 +683,7 @@ function EditorToolbar() {
     type: "confirm" | "close",
     row?: number,
     column?: number,
-    includeHeading?: boolean
+    includeHeading?: boolean,
   ) => {
     if (type === "confirm") {
       editor
@@ -689,7 +699,7 @@ function EditorToolbar() {
   const genEditorToolbarBtn = (
     child: any,
     index: number,
-    childIndex: number
+    childIndex: number,
   ) => {
     if (child.type === "button" || child.type === "colorPicker") {
       let color = undefined;
