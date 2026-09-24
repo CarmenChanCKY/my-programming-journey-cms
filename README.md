@@ -6,6 +6,13 @@ Frontend: https://github.com/CarmenChanCKY/my-programming-journey
 
 Backend: https://github.com/CarmenChanCKY/my-programming-journey-backend
 
+
+## Screenshots
+![Post List](cms_1.png)
+![Tags List](cms_2.png)
+![Post Detail](cms_3.png)
+![Add new tag](cms_4.png)
+
 ## Tech Stack
 
 | Category | Technology |
