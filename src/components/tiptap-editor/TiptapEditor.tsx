@@ -7,11 +7,12 @@ import EditorToolbar from "@/components/tiptap-editor/EditorToolbar";
 import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
-import Code from "@tiptap/extension-code";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
-import { TableHeader, TableRow, TableCell } from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableHeader from "@tiptap/extension-table-header";
+import TableCell from "@tiptap/extension-table-cell";
 import CustomTable from "@/components/tiptap-editor/table/CustomTable";
 import CodeBlockPrism from "./prism-plugin";
 import prismLanguageList from "@/components/tiptap-editor/prism-plugin/language-list";
@@ -27,7 +28,14 @@ interface EditorInterface {
 }
 
 const extensions = [
-  StarterKit.configure({ codeBlock: false }),
+  StarterKit.configure({
+    codeBlock: false,
+    code: {
+      HTMLAttributes: {
+        class: "inline-code",
+      },
+    },
+  }),
   Underline,
   TextAlign.configure({
     types: ["heading", "paragraph", "bulletList", "orderedList", "blockquote"],
@@ -35,11 +43,6 @@ const extensions = [
   TextStyle,
   Color,
   Highlight.configure({ multicolor: true }),
-  Code.configure({
-    HTMLAttributes: {
-      class: "inline-code",
-    },
-  }),
   CodeBlockPrism.configure({
     defaultLanguage: "html",
     languageList: prismLanguageList.map((obj) => {
